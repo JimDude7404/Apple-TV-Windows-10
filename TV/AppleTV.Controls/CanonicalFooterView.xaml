@@ -1,0 +1,235 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="CanonicalFooter"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  xmlns:ampv="using:AMP.UI.Views"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+
+    <ControlTemplate x:Key="DescriptionTemplate">
+      <Grid>
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup x:Name="CommonStates">
+            <VisualStateGroup.Transitions>
+              <VisualTransition GeneratedDuration="0:0:0.3" />
+            </VisualStateGroup.Transitions>
+            <VisualState x:Name="Normal" />
+            <VisualState x:Name="PointerOver">
+              <VisualState.Setters>
+                <Setter Target="MoreButtonOverlay.Opacity" Value="1" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <TextBlock Name="DescriptionText"
+          Foreground="{ThemeResource SecondaryTextForegroundColor}"
+          MaxLines="7"
+          Style="{StaticResource BodyTextBlockStyle}"
+          Text="{Binding value}"
+          TextTrimming="WordEllipsis"
+          TextWrapping="Wrap"
+          />
+
+        <Button Name="MoreButtonOverlay"
+          x:Uid="MoreButton"
+          Margin="0 0 -30 -7"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          AutomationProperties.AccessibilityView="Raw"
+          BorderThickness="0"
+          Foreground="{StaticResource TextOverflowButtonForegroundColor}"
+          Opacity="0"
+          Visibility="{Binding IsTextTrimmed, ElementName=DescriptionText, Converter={StaticResource BoolToVisibility}}"
+          >
+          <Button.Flyout>
+            <Flyout>
+              <TextBlock
+                MaxWidth="500"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="{Binding value}"
+                />
+            </Flyout>
+          </Button.Flyout>
+        </Button>
+
+      </Grid>
+    </ControlTemplate>
+
+    <Views:ItemTypeTemplateSelector x:Key="SectionContentTemplateSelector">
+
+      <Views:ItemTypeTemplate ItemType="bodyText">
+        <DataTemplate>
+          <TextBlock
+            Foreground="{ThemeResource SecondaryTextForegroundColor}"
+            Style="{StaticResource BodyTextBlockStyle}"
+            Text="{Binding value}"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="description">
+        <DataTemplate>
+          <ContentControl Name="Description"
+            Views:CommonPointerVisualStates.Enabled="True"
+            Content="{Binding}"
+            IsTabStop="False"
+            Template="{StaticResource DescriptionTemplate}"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="img">
+        <DataTemplate>
+          <Grid>
+            <Grid.Resources>
+              <Views:ImageSize x:Key="IconSize"
+                Height="20"
+                FallbackAspectRatio="1"
+                />
+              <Views:JsonImageSource x:Key="IconSource"
+                Img="{Binding}"
+                RequestSize="{StaticResource IconSize}"
+                ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+                />
+            </Grid.Resources>
+            <Views:SvgTintableImage Name="Icon"
+              Height="15"
+              HorizontalAlignment="Left"
+              Source="{StaticResource IconSource}"
+              TintColor="{Binding ActualTheme, RelativeSource={RelativeSource Self}}"
+              />
+          </Grid>
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="title">
+        <DataTemplate>
+          <TextBlock Style="{StaticResource HeadlineEmphTextBlockStyle}" Text="{Binding value}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+    </Views:ItemTypeTemplateSelector>
+
+    <Views:ItemTypeTemplateSelector x:Key="SectionTypeTemplateSelector">
+
+      <Views:ItemTypeTemplate ItemType="canonicalSectionFooter">
+        <DataTemplate>
+          <TextBlock
+            Margin="0 0 0 20"
+            ampc:TextBlock.TaggedText="{Binding children.description.value}"
+            Foreground="{ThemeResource SecondaryTextForegroundColor}"
+            Style="{StaticResource BodyTextBlockStyle}"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="canonicalSectionHeader">
+        <DataTemplate>
+          <TextBlock
+            Margin="0 25 0 10"
+            Style="{StaticResource Title2EmphTextBlockStyle}"
+            Text="{Binding children.title.value}"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="canonicalSectionItem">
+        <DataTemplate>
+          <ItemsControl
+            Margin="0 0 0 20"
+            ItemTemplateSelector="{StaticResource SectionContentTemplateSelector}"
+            ItemsSource="{Binding children}"
+            >
+            <ItemsControl.ItemContainerStyle>
+              <Style TargetType="ContentPresenter">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Top" />
+              </Style>
+            </ItemsControl.ItemContainerStyle>
+          </ItemsControl>
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+    </Views:ItemTypeTemplateSelector>
+
+    <Views:FirstOfTypeConverter x:Key="SelectAiringInfo" ItemType="canonicalAiringInfo" />
+    <Views:ItemTypeCollectionFilter x:Key="SelectSection" RetainedItemType="canonicalSection" />
+
+    <x:Double x:Key="AspectRatio_13_6">2.17</x:Double>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <!-- stretch the background color as wide as the window's content area -->
+      <Grid HorizontalAlignment="Stretch" Background="{ThemeResource CanonicalNavigationBackgroundColor}">
+        <StackPanel
+          MinWidth="{StaticResource MinContentAreaWidth}"
+          MaxWidth="{StaticResource MaxContentAreaWidth}"
+          Padding="{StaticResource ShelfRowSideMargin}"
+          >
+
+          <StackPanel.Resources>
+            <Views:JsonImageToImageSourceConverter x:Key="AiringImg" Height="34" />
+          </StackPanel.Resources>
+
+          <!-- SelectAiringInfo header -->
+          <StackPanel Name="canonicalAiringInfo"
+            DataContext="{Binding children, Converter={StaticResource SelectAiringInfo}}"
+            Orientation="Horizontal"
+            >
+
+            <Views:OptionalContentPresenter Content="{Binding children.img}">
+              <DataTemplate>
+                <Views:SvgTintableImage Name="img"
+                  MaxHeight="34"
+                  Margin="0 0 6 0"
+                  Source="{Binding Converter={StaticResource AiringImg}}"
+                  TintColor="{Binding ActualTheme, ElementName=canonicalAiringInfo}"
+                  />
+              </DataTemplate>
+            </Views:OptionalContentPresenter>
+
+            <Views:OptionalContentPresenter Content="{Binding children.text}">
+              <DataTemplate>
+                <TextBlock Name="text"
+                  VerticalAlignment="Center"
+                  ampc:TextBlock.TaggedText="{Binding value}"
+                  Opacity="{StaticResource SecondaryTextOpacity}"
+                  Style="{StaticResource HeadlineEmphTextBlockStyle}"
+                  />
+              </DataTemplate>
+            </Views:OptionalContentPresenter>
+
+          </StackPanel>
+
+          <!-- canonicalSection columns -->
+          <Views:CollectionUniformGrid
+            ColumnSpacing="20"
+            ItemsSource="{Binding children, Converter={StaticResource SelectSection}}"
+            Orientation="Horizontal"
+            >
+            <DataTemplate>
+              <Views:CollectionStackPanel
+                AutomationProperties.AutomationId="{Binding id}"
+                ItemTemplate="{StaticResource SectionTypeTemplateSelector}"
+                ItemsSource="{Binding children}"
+                />
+            </DataTemplate>
+          </Views:CollectionUniformGrid>
+
+        </StackPanel>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

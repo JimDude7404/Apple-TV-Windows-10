@@ -1,0 +1,280 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+
+<Control Name="EpisodeCollectionView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  xmlns:ampu="using:AMP.UI"
+  IsTabStop="False"
+  >
+  <Control.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <!-- Light theme or High Contrast Dark (background should be black so we want white asset for contrast) -->
+        <ResourceDictionary x:Key="Default">
+          <Style x:Key="PlaceholderImageStyle" TargetType="Image">
+            <Setter Property="Source" Value="ms-appx:///AMP.UI.Views/Assets/Generic16x9PlaceholderLight.png" />
+          </Style>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <Style x:Key="PlaceholderImageStyle" TargetType="Image">
+            <Setter Property="Source" Value="ms-appx:///AMP.UI.Views/Assets/Generic16x9PlaceholderDark.png" />
+          </Style>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrastWhite">
+          <Style x:Key="PlaceholderImageStyle" TargetType="Image">
+            <Setter Property="Source" Value="ms-appx:///AMP.UI.Views/Assets/Generic16x9PlaceholderDark.png" />
+          </Style>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+
+      <Views:ItemTypeTemplateSelector x:Key="TemplateSelector">
+        <Views:ItemTypeTemplate ItemType="placeholder">
+          <DataTemplate>
+            <!-- Can I keep this co-located with episodeLockupView somehow? -->
+            <ampc:AspectRatioGrid Name="episodeLockupPlaceholder"
+              VerticalAlignment="Top"
+              AspectRatio="{StaticResource AspectRatio_16_9}"
+              BorderBrush="{StaticResource LockupBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="{StaticResource GridItemCornerRadius}"
+              >
+              <Image Style="{StaticResource PlaceholderImageStyle}" />
+            </ampc:AspectRatioGrid>
+          </DataTemplate>
+        </Views:ItemTypeTemplate>
+
+        <Views:ItemTypeTemplate ItemType="episodeLockup">
+          <DataTemplate>
+            <Views:EpisodeLockupView />
+          </DataTemplate>
+        </Views:ItemTypeTemplate>
+
+      </Views:ItemTypeTemplateSelector>
+
+      <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
+        <Setter Property="ampu:LocalizationService.FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Margin" Value="10 0" />
+      </Style>
+
+      <ContentControl x:Key="Prototype"
+        Content="{Binding prototype.children[0]}"
+        ContentTemplateSelector="{StaticResource TemplateSelector}"
+        />
+
+      <Views:ContainerContentChangingConverter x:Key="ArgConverter" />
+      <Views:SubItemConverter x:Key="SeasonValuesConverter" SubPath="title.attributes.index" />
+    </ResourceDictionary>
+
+    <ampc:NotNullToVisibilityConverter x:Key="NotNullToVisibility" />
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate TargetType="Views:EpisodeCollectionView">
+
+      <!-- outer grid stretches the width of the content area even if it's wider than the max content area width -->
+      <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
+        <!-- inner grid constrains content to be no wider than max content area width -->
+        <Grid Name="CollectionGroupsUIRoot"
+          MinWidth="{StaticResource MinContentAreaWidth}"
+          MaxWidth="{StaticResource MaxContentAreaWidth}"
+          Views:SizeChangedRelayer.Enabled="True"
+          >
+
+          <Grid.Resources>
+            <!--
+              -60 width adjustment to account for left and right buttons (40px x2) and the Padding around the
+              ListView (20px). This adjustment is to compute the viewport width that the lockup items need to
+              fit within, so relevant to item width computation.
+            -->
+            <Views:AdaptiveLayout x:Key="GridStyle"
+              CurrentWidth="{Binding (Views:SizeChangedRelayer.Width), ElementName=CollectionGroupsUIRoot}"
+              LayoutEnvironment="{Binding layout.gridStyle, Converter={StaticResource GridStyleConverter}}"
+              WidthAdjustment="-60"
+              />
+          </Grid.Resources>
+
+          <!-- prototype is rendered behind the "shelf" so that it doesn't make the shelf taller by its existence -->
+          <Views:PrototypeMeasurer Name="Prototype" AdaptiveLayout="{StaticResource GridStyle}">
+            <!-- Padding matches the ItemContainerStyle below to correct size calculations -->
+            <ContentControl
+              Padding="10 0"
+              HorizontalContentAlignment="Stretch"
+              Content="{Binding prototype.children[0]}"
+              ContentTemplateSelector="{StaticResource TemplateSelector}"
+              IsTabStop="False"
+              />
+          </Views:PrototypeMeasurer>
+
+          <StackPanel>
+
+            <ComboBox Name="ComboHeader"
+              Margin="40 30 0 10"
+              ampu:LocalizationService.FontSize="18"
+              ampu:LocalizationService.FontType="SemiBold"
+              DisplayMemberPath="value"
+              FontWeight="Bold"
+              ItemContainerStyle="{StaticResource ComboBoxItemStyle}"
+              ItemsSource="{Binding header.episodeSectionHeader.children}"
+              SelectedIndex="0"
+              Visibility="{Binding header.episodeSectionHeader, Converter={StaticResource NotNullToVisibility}}"
+              />
+
+            <Views:OptionalContentPresenter Name="StaticHeader" Content="{Binding header.collectionHeader}">
+              <DataTemplate>
+                <TextBlock
+                  Margin="40 30 0 10"
+                  Style="{StaticResource Title2EmphTextBlockStyle}"
+                  Text="{Binding children.title.value}"
+                  />
+              </DataTemplate>
+            </Views:OptionalContentPresenter>
+
+            <!-- VisualStateManager.VisualStateGroups only works when placed on the root element of a ControlTemplate -->
+            <ContentControl Name="EpisodeContent"
+              Margin="0 10 0 0"
+              Views:CommonPointerVisualStates.Enabled="True"
+              IsTabStop="False"
+              >
+              <ContentControl.Template>
+                <ControlTemplate>
+                  <!-- transparent background rather than null so that it is a mouse-over hit target -->
+                  <Grid Background="Transparent">
+
+                    <VisualStateManager.VisualStateGroups>
+                      <VisualStateGroup x:Name="CommonStates">
+                        <VisualStateGroup.Transitions>
+                          <VisualTransition GeneratedDuration="0:0:0.3" />
+                        </VisualStateGroup.Transitions>
+                        <VisualState x:Name="Normal">
+                          <VisualState.Setters>
+                            <Setter Target="LeftButton.Opacity" Value="0" />
+                            <Setter Target="RightButton.Opacity" Value="0" />
+                          </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOver">
+                          <VisualState.Setters>
+                            <Setter Target="LeftButton.Opacity" Value="1" />
+                            <Setter Target="RightButton.Opacity" Value="1" />
+                          </VisualState.Setters>
+                        </VisualState>
+                      </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- scroll left button -->
+                    <Button Name="LeftButton"
+                      Views:ScrollButton.Direction="Left"
+                      Views:ScrollButton.Scroller="{Binding ElementName=lockups}"
+                      Style="{StaticResource LeftButtonStyle}"
+                      >
+                        <!--
+                          Setting content here explicitly, since it seems
+                          the style breaks when navigating back after navigating away
+                        -->
+                        <FontIcon
+                          Margin="-8 2"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Glyph="{StaticResource SegoeChevronLeftGlyph}"
+                          MirroredWhenRightToLeft="True"
+                          Style="{ThemeResource SegoeChromeSymbolFontIconStyle}"
+                          UseLayoutRounding="False"
+                          />
+                    </Button>
+
+                    <!-- horizontal list of collectionGroup items -->
+                    <!--
+                      Note onPhase is assigned to ContainerContentChangingCommand in code behind to ensure that
+                      PreScrollIndex is set first. This ensures that we don't try to load the content
+                      that is initially visible.
+                    -->
+                    <Grid Grid.Column="1" Padding="-10 0">
+                      <ListView Name="lockups"
+                        Views:CommandEvents.ContainerContentChangingArgsConverter="{StaticResource ArgConverter}"
+                        Views:ItemsAutomationId.Enable="True"
+                        Views:ScrollViewer.HorizontalSnapPointsType="Mandatory"
+                        Views:SynchronizeWithSelector.ItemWidth="{Binding ItemWidth, Source={StaticResource GridStyle}}"
+                        Views:SynchronizeWithSelector.ItemsPerSelectorItem="{Binding header.episodeSectionHeader.children, Converter={StaticResource SeasonValuesConverter}}"
+                        Views:SynchronizeWithSelector.PreScrollIndex="{Binding attributes}"
+                        Views:SynchronizeWithSelector.Selector="{Binding ElementName=ComboHeader}"
+                        Views:SynchronizeWithSelector.SelectorValid="{Binding header.episodeSectionHeader, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}"
+                        ItemTemplateSelector="{StaticResource TemplateSelector}"
+                        ItemsSource="{Binding children}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                        ScrollViewer.HorizontalScrollMode="Auto"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        SelectionMode="None"
+                        ShowsScrollingPlaceholders="False"
+                        >
+                        <ListView.ItemContainerStyle>
+                          <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="10 0" />
+                            <Setter Property="IsTabStop" Value="False" />
+                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                          </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <ItemsWrapGrid
+                              Views:CommandEvents.ForwardPointerWheelChangedEvent="{Binding ElementName=EpisodeCollectionView}"
+                              CacheLength="0"
+                              ItemHeight="{Binding ItemHeight, ElementName=Prototype}"
+                              ItemWidth="{Binding ItemWidth, Source={StaticResource GridStyle}}"
+                              MaximumRowsOrColumns="1"
+                              Orientation="Vertical"
+                              />
+                          </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                      </ListView>
+                    </Grid>
+
+                    <!-- scroll right button -->
+                    <Button Name="RightButton"
+                      Grid.Column="2"
+                      Views:ScrollButton.Direction="Right"
+                      Views:ScrollButton.Scroller="{Binding ElementName=lockups}"
+                      Style="{StaticResource RightButtonStyle}"
+                      >
+                        <!--
+                          Setting content here explicitly, since it seems
+                          the style breaks when navigating back after navigating away
+                        -->
+                        <FontIcon
+                          Margin="-8 2"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Glyph="{StaticResource SegoeChevronRightGlyph}"
+                          MirroredWhenRightToLeft="True"
+                          Style="{ThemeResource SegoeChromeSymbolFontIconStyle}"
+                          UseLayoutRounding="False"
+                          />
+                    </Button>
+
+                  </Grid>
+                </ControlTemplate>
+              </ContentControl.Template>
+            </ContentControl>
+
+            <!-- horizontal line between some collections -->
+            <Border Margin="40 25 40 0" Style="{StaticResource HorizontalDividerStyle}" />
+
+          </StackPanel>
+
+        </Grid>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

@@ -1,0 +1,76 @@
+<!--
+  Copyright © 2023 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Template>
+    <ControlTemplate TargetType="Views:LocationPromptTemplateView">
+      <StackPanel>
+        <Image
+          Width="64"
+          Height="64"
+          Margin="0 25"
+          HorizontalAlignment="Center"
+          Source="ms-appx:///Images/Square44x44Logo.targetsize-64.png"
+          />
+
+        <TextBlock
+          MaxWidth="250"
+          HorizontalTextAlignment="Center"
+          Style="{StaticResource Title2EmphTextBlockStyle}"
+          Text="{Binding children.header}"
+          />
+        <TextBlock
+          MaxWidth="250"
+          Margin="25 10 25 20"
+          HorizontalTextAlignment="Center"
+          Style="{StaticResource BodyTextBlockStyle}"
+          Text="{Binding children.label}"
+          />
+
+        <Button
+          MaxWidth="250"
+          Margin="0 0 0 10"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          HorizontalContentAlignment="Center"
+          Command="{Binding routerDataSource.selectEventDataSource}"
+          CornerRadius="{StaticResource ControlCornerRadius}"
+          DataContext="{Binding children.settingsButton}"
+          Style="{StaticResource TVAccentButtonStyle}"
+          >
+          <TextBlock
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource BodyTextBlockStyle}"
+            Text="{Binding children.title}"
+            />
+        </Button>
+
+        <Button
+          MaxWidth="250"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          HorizontalContentAlignment="Center"
+          Command="{Binding routerDataSource.selectEventDataSource}"
+          CornerRadius="{StaticResource ControlCornerRadius}"
+          DataContext="{Binding children.cancelButton}"
+          Style="{StaticResource DialogButtonStyle}"
+          >
+          <TextBlock
+            HorizontalTextAlignment="Center"
+            Style="{StaticResource BodyTextBlockStyle}"
+            Text="{Binding children.title}"
+            />
+        </Button>
+
+      </StackPanel>
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

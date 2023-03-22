@@ -1,0 +1,616 @@
+<!--
+  Copyright: © 2022 Apple Inc. All rights reserved.
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  xmlns:ampu="using:AMP.UI"
+  >
+
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ms-appx:///AppleTV.Controls/EpicInlineView.xaml" />
+    <ResourceDictionary Source="ms-appx:///AppleTV.Controls/FlowcaseLockupView.xaml" />
+    <ResourceDictionary Source="ms-appx:///AppleTV.Controls/SearchLockupView.xaml" />
+    <ResourceDictionary Source="ms-appx:///AppleTV.Controls/SvgTintableImage.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <ResourceDictionary.ThemeDictionaries>
+
+    <ResourceDictionary x:Key="Default">
+      <!-- aka : "Light" -->
+
+      <!-- opacities : https://quip-apple.com/PvOXAaNI7W91 -->
+      <x:Double x:Key="PrimaryTextOpacity">0.85</x:Double>
+      <x:Double x:Key="SecondaryTextOpacity">0.5</x:Double>
+      <x:Double x:Key="TertiaryTextOpacity">0.25</x:Double>
+
+      <!-- Theme unaware colors -->
+      <SolidColorBrush x:Key="LightThemeTextForegroundColor" Color="Black" />
+      <SolidColorBrush x:Key="DarkThemeTextForegroundColor" Color="White" />
+      <SolidColorBrush x:Key="SecondaryLightThemeTextForegroundColor" Opacity=".58" Color="#3C3C43" />
+      <SolidColorBrush x:Key="SportsTimeBadgeForegroundColor" Color="#FF333333" />
+      <SolidColorBrush x:Key="SportsTimeBadgeBackgroundColor" Color="#FFAAAAAA" />
+      <SolidColorBrush x:Key="SportsLiveBadgeBackgroundColor" Color="Red" />
+      <SolidColorBrush x:Key="TextOverflowButtonForegroundColor" Color="CornflowerBlue" />
+      <SolidColorBrush x:Key="OverlayContextMenuBackgroundColorHover" Color="DodgerBlue" />
+      <SolidColorBrush x:Key="OverlayContextMenuBackgroundColorDefault" Color="Gray" />
+      <SolidColorBrush x:Key="OverlayContextMenuForegroundColor" Color="White" />
+      <!-- Any way to de-dupe with Light/Dark aware version? -->
+      <SolidColorBrush x:Key="SecondaryDarkThemeTextForegroundColor" Opacity="{StaticResource SecondaryTextOpacity}" Color="#EBEBF5" />
+      <SolidColorBrush x:Key="LabelTertiaryVibrant" Opacity=".4" Color="LightGray" />
+
+      <!-- Theme aware colors -->
+      <SolidColorBrush x:Key="SecondaryTextForegroundColor" Opacity=".58" Color="#3C3C43" />
+      <SolidColorBrush x:Key="CanonicalNavigationBackgroundColor" Color="#EBEBEB" />
+    </ResourceDictionary>
+
+    <ResourceDictionary x:Key="Dark">
+
+      <x:Double x:Key="PrimaryTextOpacity">0.85</x:Double>
+      <x:Double x:Key="SecondaryTextOpacity">0.55</x:Double>
+      <x:Double x:Key="TertiaryTextOpacity">0.25</x:Double>
+
+      <!-- Theme unaware colors -->
+      <SolidColorBrush x:Key="LightThemeTextForegroundColor" Color="Black" />
+      <SolidColorBrush x:Key="DarkThemeTextForegroundColor" Color="White" />
+      <SolidColorBrush x:Key="SecondaryLightThemeTextForegroundColor" Opacity=".58" Color="#3C3C43" />
+      <SolidColorBrush x:Key="SportsTimeBadgeForegroundColor" Color="#FF333333" />
+      <SolidColorBrush x:Key="SportsTimeBadgeBackgroundColor" Color="#FFAAAAAA" />
+      <SolidColorBrush x:Key="SportsLiveBadgeBackgroundColor" Color="Red" />
+      <SolidColorBrush x:Key="TextOverflowButtonForegroundColor" Color="CornflowerBlue" />
+      <SolidColorBrush x:Key="OverlayContextMenuBackgroundColorHover" Color="DodgerBlue" />
+      <SolidColorBrush x:Key="OverlayContextMenuBackgroundColorDefault" Color="Gray" />
+      <SolidColorBrush x:Key="OverlayContextMenuForegroundColor" Color="White" />
+      <!-- Any way to de-dupe with Light/Dark aware version? -->
+      <SolidColorBrush x:Key="SecondaryDarkThemeTextForegroundColor" Opacity="{StaticResource SecondaryTextOpacity}" Color="#EBEBF5" />
+      <SolidColorBrush x:Key="LabelTertiaryVibrant" Opacity=".4" Color="LightGray" />
+
+      <!-- Theme aware colors -->
+      <SolidColorBrush x:Key="SecondaryTextForegroundColor" Opacity=".6" Color="#EBEBF5" />
+      <SolidColorBrush x:Key="CanonicalNavigationBackgroundColor" Color="#1D1D1D" />
+
+      <!--
+        Dark mode buttons' brushes have to be overriden here, as they are
+        not currently working correctly with RequestedTheme. Remove with rdar://102612717
+      -->
+      <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Opacity="0.6" Color="Black" />
+      <SolidColorBrush x:Key="ButtonBackgroundPressed" Opacity="0.4" Color="Black" />
+      <SolidColorBrush x:Key="ButtonBackgroundDisabled" Opacity="0.4" Color="Black" />
+      <SolidColorBrush x:Key="ButtonForegroundPointerOver" Opacity="0.6" Color="White" />
+      <SolidColorBrush x:Key="ButtonForegroundPressed" Opacity="0.4" Color="White" />
+      <SolidColorBrush x:Key="ButtonForegroundDisabled" Opacity="0.4" Color="White" />
+    </ResourceDictionary>
+
+    <ResourceDictionary x:Key="HighContrast">
+
+      <x:Double x:Key="PrimaryTextOpacity">1</x:Double>
+      <x:Double x:Key="SecondaryTextOpacity">1</x:Double>
+      <x:Double x:Key="TertiaryTextOpacity">1</x:Double>
+
+      <!-- All resources should respect high contrast -->
+      <SolidColorBrush x:Key="LightThemeTextForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="DarkThemeTextForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="SecondaryTextForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="CanonicalNavigationBackgroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="SecondaryLightThemeTextForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="SecondaryDarkThemeTextForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="LabelTertiaryVibrant" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="SportsTimeBadgeForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="SportsTimeBadgeBackgroundColor" Color="{StaticResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="SportsLiveBadgeBackgroundColor" Color="{StaticResource SystemColorWindowColor}" />
+      <SolidColorBrush x:Key="TextOverflowButtonForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+      <SolidColorBrush x:Key="OverlayContextMenuBackgroundColorHover" Color="{StaticResource SystemColorHighlightColor}" />
+      <SolidColorBrush x:Key="OverlayContextMenuBackgroundColorDefault" Color="{StaticResource SystemColorButtonFaceColor}" />
+      <SolidColorBrush x:Key="OverlayContextMenuForegroundColor" Color="{StaticResource SystemColorButtonTextColor}" />
+      <x:Double x:Key="SecondaryTextOpacity">1.0</x:Double>
+    </ResourceDictionary>
+
+  </ResourceDictionary.ThemeDictionaries>
+
+  <Views:ColorToThemeConverter x:Key="ColorToTheme" />
+
+  <!-- dark text over light images and light text over dark images -->
+  <ampc:KeyValueConverter x:Key="TextForegroundSelector">
+    <ampc:KeyValuePair Key="light" Value="{StaticResource LightThemeTextForegroundColor}" />
+    <ampc:KeyValuePair Key="dark" Value="{StaticResource DarkThemeTextForegroundColor}" />
+  </ampc:KeyValueConverter>
+
+  <ampc:KeyValueConverter x:Key="SecondaryTextForegroundSelector">
+    <ampc:KeyValuePair Key="light" Value="{StaticResource SecondaryLightThemeTextForegroundColor}" />
+    <ampc:KeyValuePair Key="dark" Value="{StaticResource SecondaryDarkThemeTextForegroundColor}" />
+  </ampc:KeyValueConverter>
+
+  <!-- can be used to set the ElementTheme of a Xaml element based on the background img.theme to affect image overlaying text foreground color -->
+  <ElementTheme x:Key="LightElementTheme">Light</ElementTheme>
+  <ElementTheme x:Key="DarkElementTheme">Dark</ElementTheme>
+  <ampc:KeyValueConverter x:Key="ImgThemeToElementTheme" DefaultValue="{StaticResource DarkElementTheme}">
+    <ampc:KeyValuePair Key="light" Value="{StaticResource LightElementTheme}" />
+  </ampc:KeyValueConverter>
+
+  <x:Double x:Key="SmallViewportMax">999</x:Double>
+  <!-- 999 pt -->
+  <x:Double x:Key="SmallViewportMin">740</x:Double>
+  <!-- 740 pt -->
+  <x:Double x:Key="MediumViewportMax">1319</x:Double>
+  <!-- 1319 pt -->
+  <x:Double x:Key="MediumViewportMin">1000</x:Double>
+  <!-- 1000 pt -->
+  <x:Double x:Key="LargeViewportMax">1680</x:Double>
+  <!-- 1680 pt -->
+  <x:Double x:Key="LargeViewportMin">1320</x:Double>
+  <!-- 1320 pt -->
+
+  <Views:LayoutEnvironment x:Key="GridStyleA">
+    <Views:WidthRange
+      Count="2"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="2"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleAA">
+    <Views:WidthRange
+      Count="2"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="2"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleB">
+    <Views:WidthRange
+      Count="2"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="4"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleC">
+    <!-- max item width 293.333px -->
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <!-- max item width 295px -->
+    <Views:WidthRange
+      Count="4"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <!-- max item width 304px -->
+    <Views:WidthRange
+      Count="5"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleD">
+    <Views:WidthRange
+      Count="4"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="5"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="8"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleE">
+    <Views:WidthRange
+      Count="5"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="9"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="10"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleF">
+    <Views:WidthRange
+      Count="2"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleG">
+    <Views:WidthRange
+      Count="4"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="5"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="6"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleH">
+    <Views:WidthRange
+      Count="6"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="8"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="10"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleJ">
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource SmallViewportMax}"
+      Min="{StaticResource SmallViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource MediumViewportMax}"
+      Min="{StaticResource MediumViewportMin}"
+      Spacing="20"
+      />
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource LargeViewportMax}"
+      Min="{StaticResource LargeViewportMin}"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleEdgeToEdge">
+    <Views:WidthRange
+      Count="1"
+      Max="{StaticResource LargeViewportMax}"
+      Min="0"
+      Spacing="0"
+      />
+  </Views:LayoutEnvironment>
+
+  <Views:LayoutEnvironment x:Key="GridStyleTopResults">
+    <Views:WidthRange
+      Count="3"
+      Max="{StaticResource LargeViewportMax}"
+      Min="0"
+      Spacing="20"
+      />
+  </Views:LayoutEnvironment>
+
+  <ampc:KeyValueConverter x:Key="GridStyleConverter" DefaultValue="{StaticResource GridStyleEdgeToEdge}">
+    <ampc:KeyValuePair Key="a" Value="{StaticResource GridStyleA}" />
+    <ampc:KeyValuePair Key="aa" Value="{StaticResource GridStyleAA}" />
+    <ampc:KeyValuePair Key="b" Value="{StaticResource GridStyleB}" />
+    <ampc:KeyValuePair Key="c" Value="{StaticResource GridStyleC}" />
+    <ampc:KeyValuePair Key="d" Value="{StaticResource GridStyleD}" />
+    <ampc:KeyValuePair Key="e" Value="{StaticResource GridStyleE}" />
+    <ampc:KeyValuePair Key="f" Value="{StaticResource GridStyleF}" />
+    <ampc:KeyValuePair Key="g" Value="{StaticResource GridStyleG}" />
+    <ampc:KeyValuePair Key="h" Value="{StaticResource GridStyleH}" />
+    <ampc:KeyValuePair Key="j" Value="{StaticResource GridStyleJ}" />
+    <ampc:KeyValuePair Key="edgeToEdge" Value="{StaticResource GridStyleEdgeToEdge}" />
+    <ampc:KeyValuePair Key="topResults" Value="{StaticResource GridStyleTopResults}" />
+  </ampc:KeyValueConverter>
+
+  <ampc:SFSymbolToUnicodeConverter x:Key="SFSymbolToUnicodeConverter" />
+  <Views:CapitalizeStringConverter x:Key="ToUpper" />
+  <Views:IconButtonConverter x:Key="ToImage" />
+
+  <Views:NullToVisibilityConverter x:Key="NullToCollapsed" />
+  <ampc:NotNullToVisibilityConverter x:Key="NotNullToVisibility" />
+  <ampc:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+  <Style x:Key="MonogramTextBlockStyle"
+    BasedOn="{StaticResource AppleBaseTextBlockStyle}"
+    TargetType="TextBlock"
+    >
+    <Setter Property="ampu:LocalizationService.FontSize" Value="48" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
+    <Setter Property="TextLineBounds" Value="Tight" />
+  </Style>
+
+  <Style x:Key="MonogramTextBlockStyleLarge"
+    BasedOn="{StaticResource MonogramTextBlockStyle}"
+    TargetType="TextBlock"
+    >
+    <Setter Property="ampu:LocalizationService.FontSize" Value="80" />
+  </Style>
+
+  <Views:ColorZeroAlphaConverter x:Key="ZeroAlpha" />
+
+  <Style x:Key="DividerStyle" TargetType="Border">
+    <Setter Property="BorderBrush" Value="{ThemeResource LabelTertiaryVibrant}" />
+  </Style>
+
+  <Style x:Key="HorizontalDividerStyle"
+    BasedOn="{StaticResource DividerStyle}"
+    TargetType="Border"
+    >
+    <Setter Property="MinWidth" Value="40" />
+    <Setter Property="BorderThickness" Value="0 0 0 1" />
+  </Style>
+
+  <Style x:Key="VerticalDividerStyle"
+    BasedOn="{StaticResource DividerStyle}"
+    TargetType="Border"
+    >
+    <Setter Property="MinHeight" Value="40" />
+    <Setter Property="BorderThickness" Value="0 0 1 0" />
+  </Style>
+
+  <SolidColorBrush x:Key="AccentButtonBackground" Color="{ThemeResource SystemAccentColor}" />
+  <Views:StaticResourceValue x:Key="AccentButtonForegroundTheme" Value="{Binding Color, Source={ThemeResource ButtonBackground}, Converter={StaticResource ColorToTheme}, ConverterParameter=inverse}" />
+
+  <Style x:Key="TVAccentButtonStyle" TargetType="Button">
+    <Setter Property="Resources">
+      <Setter.Value>
+        <ResourceDictionary Source="ms-appx:///AppleTV.Controls/AccentButton.xaml" />
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Background" Value="{ThemeResource AccentButtonBackground}" />
+    <Setter Property="RequestedTheme" Value="{Binding Value, Source={StaticResource AccentButtonForegroundTheme}}" />
+  </Style>
+
+  <Views:FirstOfTypeConverter x:Key="SelectTitleChild" ItemType="title" />
+  <Views:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+  <DataTemplate x:Key="VersionTemplate">
+    <!-- Make the button blend in with the other text via negative margin and odd alignment -->
+    <HyperlinkButton
+      Margin="-12 -5 0 0"
+      HorizontalContentAlignment="Left"
+      VerticalContentAlignment="Top"
+      Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}"
+      AutomationProperties.AutomationId="{Binding id}"
+      >
+      <TextBlock
+        DataContext="{Binding children, Converter={StaticResource SelectTitleChild}}"
+        Style="{StaticResource CalloutTextBlockStyle}"
+        Text="{Binding value}"
+        />
+    </HyperlinkButton>
+  </DataTemplate>
+
+  <Views:ImageSize x:Key="LockupDefaultSize"
+    Height="172"
+    FallbackAspectRatio="{StaticResource AspectRatio_16_9}"
+    />
+  <Views:ImageSize x:Key="BannerDefaultSize"
+    Height="945"
+    OverrideAspectRatio="{StaticResource AspectRatio_16_9}"
+    />
+
+  <!-- Sidebar search hint visuals -->
+  <Views:ItemTypeTemplateSelector x:Key="TVSearchHintsTemplateSelector">
+
+    <Views:ItemTypeTemplate ItemType="searchLockup">
+      <DataTemplate>
+        <Grid
+          Height="58"
+          Padding="0 5"
+          HorizontalAlignment="Stretch"
+          DataContext="{Binding children}"
+          >
+
+          <Grid.Resources>
+            <Views:ImageSize x:Key="ImgSize"
+              Height="48"
+              FallbackAspectRatio="{StaticResource AspectRatio_16_9}"
+              />
+            <Views:JsonImageSource x:Key="ImgSource"
+              Img="{Binding children.img}"
+              RequestSize="{StaticResource ImgSize}"
+              ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+              />
+            <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+          </Grid.Resources>
+
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+
+          <ampc:AspectRatioGrid
+            Margin="0 0 10 0"
+            Views:JsonImage.FixDirection="True"
+            Views:JsonImage.LoadingCurtain="{StaticResource ImgSource}"
+            AspectRatio="{Binding AspectRatio, Source={StaticResource ImgSource}}"
+            Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+            BorderBrush="{StaticResource LockupBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="4"
+            />
+
+          <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock
+              MaxLines="1"
+              Style="{StaticResource BodyTextBlockStyle}"
+              Text="{Binding title.value}"
+              />
+            <TextBlock
+              Opacity="0.6"
+              Style="{StaticResource CalloutTextBlockStyle}"
+              Text="{Binding subtitle.value}"
+              />
+          </StackPanel>
+
+        </Grid>
+      </DataTemplate>
+    </Views:ItemTypeTemplate>
+
+    <Views:ItemTypeTemplate ItemType="searchHintLockup">
+      <DataTemplate>
+        <TextBlock
+          VerticalAlignment="Center"
+          Style="{StaticResource BodyTextBlockStyle}"
+          Text="{Binding children.text.value}"
+          />
+      </DataTemplate>
+    </Views:ItemTypeTemplate>
+
+  </Views:ItemTypeTemplateSelector>
+
+  <Style x:Key="LeftButtonStyle"
+    BasedOn="{StaticResource ShelfViewArrowButtonStyle}"
+    TargetType="Button"
+    >
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Opacity" Value="0" />
+    <Setter Property="Template" Value="{x:Null}" />
+    <Setter Property="UseSystemFocusVisuals" Value="False" />
+    <Setter Property="Content">
+      <Setter.Value>
+        <FontIcon
+          Margin="-8 2"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Glyph="{StaticResource SegoeChevronLeftGlyph}"
+          MirroredWhenRightToLeft="True"
+          Style="{ThemeResource SegoeChromeSymbolFontIconStyle}"
+          UseLayoutRounding="False"
+          />
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="RightButtonStyle"
+    BasedOn="{StaticResource ShelfViewArrowButtonStyle}"
+    TargetType="Button"
+    >
+    <Setter Property="HorizontalAlignment" Value="Right" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Opacity" Value="0" />
+    <Setter Property="Template" Value="{x:Null}" />
+    <Setter Property="UseSystemFocusVisuals" Value="False" />
+    <Setter Property="Content">
+      <Setter.Value>
+        <FontIcon
+          Margin="-8 2"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Glyph="{StaticResource SegoeChevronRightGlyph}"
+          MirroredWhenRightToLeft="True"
+          Style="{ThemeResource SegoeChromeSymbolFontIconStyle}"
+          UseLayoutRounding="False"
+          />
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="SportsTimeBadge"
+    BasedOn="{StaticResource CalloutEmphTextBlockStyle}"
+    TargetType="TextBlock"
+    >
+    <Setter Property="MaxLines" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource SportsTimeBadgeForegroundColor}" />
+  </Style>
+
+  <Style x:Key="SportsLiveBadge"
+    BasedOn="{StaticResource CalloutEmphTextBlockStyle}"
+    TargetType="TextBlock"
+    >
+    <Setter Property="MaxLines" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource DarkThemeTextForegroundColor}" />
+  </Style>
+
+  <ResourceDictionary x:Key="Ratings" Source="ms-appx:///AppleTV.Controls/VUIContentRatings.xaml" />
+
+</ResourceDictionary>

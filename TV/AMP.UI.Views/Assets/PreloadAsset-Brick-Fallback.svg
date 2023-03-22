@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="560px" height="315px" viewBox="0 0 560 315" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>PreloadAsset-Brick-Fallback</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#B6B6B6" offset="0%"></stop>
+            <stop stop-color="#B6B6B6" offset="12.6060849%"></stop>
+            <stop stop-color="#B0B0B0" offset="24.9517532%"></stop>
+            <stop stop-color="#AAAAAA" offset="38.189736%"></stop>
+            <stop stop-color="#A0A0A0" offset="50.1808772%"></stop>
+            <stop stop-color="#969696" offset="63.0691674%"></stop>
+            <stop stop-color="#898989" offset="75.2460007%"></stop>
+            <stop stop-color="#848484" offset="87.044157%"></stop>
+            <stop stop-color="#7A7A7A" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="PreloadAsset-Brick-Fallback" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M0,0 L560,0 L560,315 L0,315 L0,0 Z" id="Rectangle" fill="url(#linearGradient-1)"></path>
+    </g>
+</svg>

@@ -1,0 +1,184 @@
+<!--
+  Copyright © 2023 Apple Inc. All rights reserved.
+  
+  Design Reference :
+  https://pd-hi.apple.com/viewvc/Common/Modules/macOS/TV%20App/Lockups/Epic%20Showcase.png
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  >
+
+  <Style TargetType="Views:FlowcaseLockupView">
+    <Setter Property="UseSystemFocusVisuals" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+
+          <ampc:AspectRatioGrid
+            AspectRatio="{StaticResource AspectRatio_8_3}"
+            BorderBrush="{StaticResource LockupBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{StaticResource GridItemCornerRadius}"
+            DataContext="{Binding children}"
+            RequestedTheme="{Binding img.theme, Converter={StaticResource ImgThemeToElementTheme}}"
+            >
+
+            <!-- placehold color shows while background image is loading -->
+            <ampc:AspectRatioGrid.Background>
+              <SolidColorBrush Color="{Binding children.img.layout.placeholderColor}" />
+            </ampc:AspectRatioGrid.Background>
+
+            <ampc:AspectRatioGrid.Resources>
+
+              <Views:JsonImageToImageSourceConverter x:Key="BkgSource" Width="1600" />
+              <Views:JsonImageToImageSourceConverter x:Key="ImgSource" Width="320" />
+              <Views:JsonImageToImageSourceConverter x:Key="LogoSource" Width="130" />
+              <Views:JsonImageToImageSourceConverter x:Key="ChannelLogoSource" Height="23" />
+
+            </ampc:AspectRatioGrid.Resources>
+
+            <Image Name="Background"
+              Source="{Binding img, Converter={StaticResource BkgSource}}"
+              Stretch="UniformToFill"
+              />
+
+            <Image Name="AlphaImg" Source="{Binding alphaImg, Converter={StaticResource BkgSource}}" />
+
+            <Image Name="Logo"
+              Width="130"
+              MaxHeight="24"
+              Margin="20"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              Source="{Binding logo, Converter={StaticResource LogoSource}}"
+              />
+
+            <Grid
+              Height="70"
+              VerticalAlignment="Bottom"
+              Visibility="{Binding title.value, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed}"
+              >
+              <Grid.Resources>
+                <Views:StaticResourceValue x:Key="BackgroundColor" Value="{Binding img.layout.backgroundColor}" />
+              </Grid.Resources>
+              <Grid.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                  <!-- stops deviate from design to match macOS -->
+                  <GradientStop Offset="0" Color="{Binding Value, Source={StaticResource BackgroundColor}, Converter={StaticResource ZeroAlpha}}" />
+                  <GradientStop Offset="0.95" Color="{Binding Value, Source={StaticResource BackgroundColor}}" />
+                </LinearGradientBrush>
+              </Grid.Background>
+              <TextBlock Name="Flavor D Title"
+                Margin="0 16"
+                VerticalAlignment="Bottom"
+                HorizontalTextAlignment="Center"
+                Style="{StaticResource Title2EmphTextBlockStyle}"
+                Text="{Binding title.value}"
+                />
+            </Grid>
+
+            <!--
+              Designs say ...
+              MaxWidth should be Small: 290pt, Medium: 330pt, Large: 360pt, but on macOS it is always 330
+              Margin should be 30,0,30,25 but it doesn't look like macOS unless I use 40,0,40,25
+            -->
+            <Views:CollectionStackPanel Name="verticalStack"
+              MaxWidth="330"
+              Margin="40 0 40 25"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Bottom"
+              ItemsSource="{Binding verticalStack.children}"
+              >
+              <Views:ItemTypeTemplateSelector>
+
+                <Views:ItemTypeTemplate ItemType="img">
+                  <DataTemplate>
+                    <Image Name="img"
+                      MaxWidth="320"
+                      MaxHeight="115"
+                      Margin="0 0 0 12"
+                      HorizontalAlignment="Left"
+                      Source="{Binding Converter={StaticResource ImgSource}}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="channelLogo">
+                  <DataTemplate>
+                    <!-- Deviates completely from design. Modified to match macOS -->
+                    <Image Name="channelLogo"
+                      MaxHeight="23"
+                      Margin="0 0 0 10"
+                      HorizontalAlignment="Left"
+                      Source="{Binding children.img, Converter={StaticResource ChannelLogoSource}}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="caption">
+                  <DataTemplate>
+                    <TextBlock Name="caption"
+                      Opacity="{ThemeResource SecondaryTextOpacity}"
+                      Style="{StaticResource CalloutEmphTextBlockStyle}"
+                      Text="{Binding value, Converter={StaticResource ToUpper}}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="title">
+                  <DataTemplate>
+                    <TextBlock Name="title"
+                      Margin="0 0 0 4"
+                      Opacity="{ThemeResource PrimaryTextOpacity}"
+                      Style="{StaticResource LargeTitleEmphTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="subtitle">
+                  <DataTemplate>
+                    <TextBlock Name="subtitle"
+                      Margin="0 0 0 6"
+                      Opacity="{ThemeResource SecondaryTextOpacity}"
+                      Style="{StaticResource Title2TextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="bodyText">
+                  <DataTemplate>
+                    <TextBlock Name="bodyText"
+                      Margin="0 0 0 4"
+                      Opacity="{ThemeResource PrimaryTextOpacity}"
+                      Style="{StaticResource Title2EmphTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="subBody">
+                  <DataTemplate>
+                    <TextBlock Name="subBody"
+                      Opacity="{ThemeResource SecondaryTextOpacity}"
+                      Style="{StaticResource SubheadTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+              </Views:ItemTypeTemplateSelector>
+            </Views:CollectionStackPanel>
+
+          </ampc:AspectRatioGrid>
+
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,385 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="ViewRoot"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:CommonPointerVisualStates.Enabled="True"
+  AutomationProperties.AutomationId="{Binding id}"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+
+    <Views:StaticResourceValue x:Key="LockupDisplayType" Value="{Binding contextDataRef.displayType}" />
+
+    <Views:StaticResourceValue x:Key="OrthImgTheme" Value="{Binding ImgTheme, ElementName=ViewRoot}" />
+    <Views:StaticResourceValue x:Key="TextForegroundValue" Value="{Binding Value, Source={StaticResource OrthImgTheme}, Converter={StaticResource TextForegroundSelector}}" />
+
+    <Views:ItemTypeTemplateSelector x:Key="TemplateSelector">
+
+      <Views:ItemTypeTemplate ItemType="aboutCard">
+        <DataTemplate>
+          <Views:CanonicalInfoCardView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="commonSenseCard">
+        <DataTemplate>
+          <Views:CanonicalInfoCardView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="decoratedShelfLockup">
+        <DataTemplate>
+          <Views:LockupView ImgTheme="{Binding Value, Source={StaticResource OrthImgTheme}}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="editorialLockup">
+        <DataTemplate>
+          <Views:EditorialLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="episodeLockup">
+        <DataTemplate>
+          <Views:EpisodeLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="flowcaseLockup">
+        <DataTemplate>
+          <Views:FlowcaseLockupView Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="lockup">
+        <DataTemplate>
+          <Views:LockupView DisplayType="{Binding Value, Source={StaticResource LockupDisplayType}}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="monogramLockup">
+        <DataTemplate>
+          <Views:MonogramLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="offerCard">
+        <DataTemplate>
+          <Views:OfferCardView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="ordinalLockup">
+        <DataTemplate>
+          <Views:OrdinalLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="playHistoryLockup">
+        <DataTemplate>
+          <Views:LockupView DisplayType="{Binding Value, Source={StaticResource LockupDisplayType}}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="searchCastLockup">
+        <DataTemplate>
+          <Views:MonogramLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="searchChannelLockup">
+        <DataTemplate>
+          <Views:MonogramLockupView ShowTitleTexts="False" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="searchLockup">
+        <DataTemplate>
+          <Views:SearchLockupView DisplayType="{Binding Value, Source={StaticResource LockupDisplayType}, FallbackValue='topResult'}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="sportsCard">
+        <DataTemplate>
+          <Views:SportsCardView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="sportsExtraLockup">
+        <DataTemplate>
+          <Views:LockupView DisplayType="{Binding Value, Source={StaticResource LockupDisplayType}}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="tomatometerCard">
+        <DataTemplate>
+          <Views:CanonicalInfoCardView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="upNextLockup">
+        <DataTemplate>
+          <Views:UpNextLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+    </Views:ItemTypeTemplateSelector>
+
+    <Style x:Key="LeftButtonStyleWithOptionalColor"
+      BasedOn="{StaticResource LeftButtonStyle}"
+      TargetType="Button"
+      >
+      <Setter Property="Content">
+        <Setter.Value>
+          <FontIcon
+            Margin="-8 2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Views:OptionalColor.Foreground="{Binding Value, Source={StaticResource TextForegroundValue}}"
+            Glyph="{StaticResource SegoeChevronLeftGlyph}"
+            MirroredWhenRightToLeft="True"
+            Style="{ThemeResource SegoeChromeSymbolFontIconStyle}"
+            UseLayoutRounding="False"
+            />
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="RightButtonStyleWithOptionalColor"
+      BasedOn="{StaticResource RightButtonStyle}"
+      TargetType="Button"
+      >
+      <Setter Property="Content">
+        <Setter.Value>
+          <FontIcon
+            Margin="-8 2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Views:OptionalColor.Foreground="{Binding Value, Source={StaticResource TextForegroundValue}}"
+            Glyph="{StaticResource SegoeChevronRightGlyph}"
+            MirroredWhenRightToLeft="True"
+            Style="{ThemeResource SegoeChromeSymbolFontIconStyle}"
+            UseLayoutRounding="False"
+            />
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <GroupStyle x:Key="GroupHeaderStyle">
+      <GroupStyle.HeaderContainerStyle>
+        <Style TargetType="ListViewHeaderItem">
+          <Setter Property="MinHeight" Value="0" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="ListViewHeaderItem">
+                <ContentPresenter />
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </GroupStyle.HeaderContainerStyle>
+      <GroupStyle.HeaderTemplate>
+        <DataTemplate>
+          <Views:CollectionStackPanel ItemsSource="{Binding header.collectionHeader.children}">
+            <Views:ItemTypeTemplateSelector>
+              <Views:ItemTypeTemplate ItemType="title">
+                <DataTemplate>
+                  <TextBlock
+                    Padding="0 0 0 12"
+                    Style="{StaticResource Title2EmphTextBlockStyle}"
+                    Text="{Binding value}"
+                    />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+            </Views:ItemTypeTemplateSelector>
+          </Views:CollectionStackPanel>
+        </DataTemplate>
+      </GroupStyle.HeaderTemplate>
+    </GroupStyle>
+
+    <ampc:KeyValueConverter x:Key="IsMultiGroupToGroupStyle">
+      <ampc:KeyValuePair Key="True" Value="{StaticResource GroupHeaderStyle}" />
+    </ampc:KeyValueConverter>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate TargetType="Views:OrthogonalCollectionView">
+
+      <!-- outer grid stretches the width of the content area even if it's wider than the max content area width -->
+      <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
+
+        <!-- VisualStateGroups must be a child of the first element inside a ControlTemplate -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup x:Name="CommonStates">
+            <VisualStateGroup.Transitions>
+              <VisualTransition GeneratedDuration="0:0:0.3" />
+            </VisualStateGroup.Transitions>
+            <VisualState x:Name="Normal">
+              <VisualState.Setters>
+                <Setter Target="LeftButton.Opacity" Value="0" />
+                <Setter Target="RightButton.Opacity" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="PointerOver">
+              <VisualState.Setters>
+                <Setter Target="LeftButton.Opacity" Value="1" />
+                <Setter Target="RightButton.Opacity" Value="1" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!-- inner grid constrains content to be no wider than max content area width -->
+        <Grid Name="CollectionGroupsUIRoot"
+          MinWidth="{StaticResource MinContentAreaWidth}"
+          MaxWidth="{StaticResource MaxContentAreaWidth}"
+          Views:SizeChangedRelayer.Enabled="True"
+          >
+
+          <Grid.Resources>
+            <!--
+              -60 width adjustment to account for left and right buttons (40px x2) and the Padding around the
+              ListView (20px). This adjustment is to compute the viewport width that the lockup items need to
+              fit within, so relevant to item width computation.
+            -->
+            <Views:AdaptiveLayout x:Key="GridStyle"
+              CurrentWidth="{Binding (Views:SizeChangedRelayer.Width), ElementName=CollectionGroupsUIRoot}"
+              LayoutEnvironment="{Binding layout.gridStyle, Converter={StaticResource GridStyleConverter}}"
+              WidthAdjustment="-60"
+              />
+
+            <CollectionViewSource x:Key="GroupedCollection"
+              IsSourceGrouped="True"
+              ItemsPath="children"
+              Source="{Binding collectionGroups}"
+              />
+          </Grid.Resources>
+
+          <!-- prototype is rendered behind the "shelf" so that it doesn't make the shelf taller by its existence -->
+          <Views:PrototypeMeasurer Name="Prototype" AdaptiveLayout="{StaticResource GridStyle}">
+            <!-- Padding matches the ItemContainerStyle below to correct size calculations -->
+            <ContentControl
+              Padding="10 0"
+              HorizontalContentAlignment="Stretch"
+              Content="{Binding prototype.children[0]}"
+              ContentTemplateSelector="{StaticResource TemplateSelector}"
+              IsTabStop="False"
+              />
+          </Views:PrototypeMeasurer>
+
+          <StackPanel>
+
+            <!-- header -->
+            <Views:CollectionStackPanel Margin="40 0" ItemsSource="{Binding header.collectionHeader.children}">
+              <Views:ItemTypeTemplateSelector>
+
+                <Views:ItemTypeTemplate ItemType="title">
+                  <DataTemplate>
+                    <TextBlock
+                      Margin="0 10 0 0"
+                      Style="{StaticResource Title2EmphTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="subtitle">
+                  <DataTemplate>
+                    <TextBlock
+                      Margin="0 4 0 0"
+                      Foreground="{ThemeResource SecondaryTextForegroundColor}"
+                      Style="{StaticResource BodyTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+              </Views:ItemTypeTemplateSelector>
+            </Views:CollectionStackPanel>
+
+            <Grid Margin="0 10 0 25" Background="Transparent">
+
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+              </Grid.ColumnDefinitions>
+
+              <!-- scroll left button -->
+              <Button Name="LeftButton"
+                Views:ScrollButton.Direction="Left"
+                Views:ScrollButton.Scroller="{Binding ElementName=lockups}"
+                Style="{StaticResource LeftButtonStyleWithOptionalColor}"
+                />
+
+              <!-- horizontal list of collectionGroup items -->
+              <Grid Grid.Column="1" Padding="-10 0">
+                <ListView Name="lockups"
+                  Views:ItemsAutomationId.Enable="True"
+                  Views:ListView.GroupStyle="{Binding IsMultiGroup, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource IsMultiGroupToGroupStyle}}"
+                  Views:ScrollRetainer.Retain="True"
+                  Views:ScrollViewer.HorizontalSnapPointsType="{TemplateBinding SnapPointsType}"
+                  Views:ScrollViewer.PreventBackScroll="True"
+                  ItemTemplateSelector="{StaticResource TemplateSelector}"
+                  ItemsSource="{Binding Source={StaticResource GroupedCollection}}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                  ScrollViewer.HorizontalScrollMode="Auto"
+                  ScrollViewer.VerticalScrollMode="Disabled"
+                  SelectionMode="None"
+                  >
+                  <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                      <Setter Property="Padding" Value="10 0" />
+                      <Setter Property="IsTabStop" Value="False" />
+                      <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                  </ListView.ItemContainerStyle>
+                  <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <ItemsWrapGrid
+                        Views:CommandEvents.ForwardPointerWheelChangedEvent="{Binding ElementName=ViewRoot}"
+                        CacheLength="0"
+                        ItemHeight="{Binding ItemHeight, ElementName=Prototype}"
+                        ItemWidth="{Binding ItemWidth, Source={StaticResource GridStyle}}"
+                        MaximumRowsOrColumns="1"
+                        Orientation="Vertical"
+                        />
+                    </ItemsPanelTemplate>
+                  </ListView.ItemsPanel>
+                </ListView>
+              </Grid>
+
+              <!-- scroll right button -->
+              <Button Name="RightButton"
+                Grid.Column="2"
+                Views:ScrollButton.Direction="Right"
+                Views:ScrollButton.Scroller="{Binding ElementName=lockups}"
+                Style="{StaticResource RightButtonStyleWithOptionalColor}"
+                />
+
+            </Grid>
+
+            <!-- horizontal line between some collections -->
+            <Views:OptionalContentPresenter Content="{TemplateBinding DecorationType}">
+              <DataTemplate>
+                <Border Margin="40 0" Style="{StaticResource HorizontalDividerStyle}" />
+              </DataTemplate>
+            </Views:OptionalContentPresenter>
+
+          </StackPanel>
+
+        </Grid>
+
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

@@ -1,0 +1,327 @@
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Name="UnifiedOverlayView"
+  Views:CommonPointerVisualStates.Enabled="True"
+  >
+
+  <Control.Resources>
+
+    <!-- Text Styles and Converters -->
+    <Style x:Key="OverlayTitleStyle" BasedOn="{StaticResource CalloutEmphTextBlockStyle}" TargetType="TextBlock">
+      <Setter Property="MaxLines" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource DarkThemeTextForegroundColor}" />
+    </Style>
+
+    <Style x:Key="SportsTimeBadge" BasedOn="{StaticResource CalloutEmphTextBlockStyle}" TargetType="TextBlock">
+      <Setter Property="MaxLines" Value="1" />
+      <Setter Property="Foreground" Value="#FF333333" />
+    </Style>
+
+    <Style x:Key="SportsLiveBadge" BasedOn="{StaticResource CalloutEmphTextBlockStyle}" TargetType="TextBlock">
+      <Setter Property="MaxLines" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource DarkThemeTextForegroundColor}" />
+    </Style>
+
+    <Style x:Key="RentalExpiryBadge" BasedOn="{StaticResource CalloutEmphTextBlockStyle}" TargetType="TextBlock">
+      <Setter Property="MaxLines" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource DarkThemeTextForegroundColor}" />
+    </Style>
+
+    <Views:ExpiryTimeToDisplayString x:Key="ToDisplayString" />
+
+    <Visibility x:Key="ElementVisible">Visible</Visibility>
+    <Visibility x:Key="ElementCollapsed">Collapsed</Visibility>
+    <ampc:KeyValueConverter x:Key="ProgressBarVisibility" DefaultValue="{StaticResource ElementCollapsed}">
+      <ampc:KeyValuePair Key="always" Value="{StaticResource ElementVisible}" />
+    </ampc:KeyValueConverter>
+
+    <ControlTemplate x:Key="CircleIconButton" TargetType="Button">
+      <Grid x:Name="ButtonRoot"
+        Width="30"
+        Height="30"
+        Background="{ThemeResource OverlayContextMenuBackgroundColorDefault}"
+        CornerRadius="15"
+        >
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup x:Name="CommonStates">
+            <VisualState x:Name="Normal" />
+            <VisualState x:Name="PointerOver">
+              <VisualState.Setters>
+                <Setter Target="ButtonRoot.Background" Value="{ThemeResource OverlayContextMenuBackgroundColorHover}" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <SymbolIcon Foreground="{ThemeResource OverlayContextMenuForegroundColor}" Symbol="More" />
+      </Grid>
+    </ControlTemplate>
+
+    <ampc:ResourceFormatterConverter x:Key="ResourceConverter" />
+    <x:String x:Key="ViewDetailsResourceKey">TV^Button^ViewDetails</x:String>
+    <x:String x:Key="ShareResourceKey">TV^Popover^Sharing^Generic</x:String>
+    <x:String x:Key="RemoveFromUpNextResourceKey">TV^Button^UpNext^Remove</x:String>
+    <x:String x:Key="AddToUpNextResourceKey">TV^Button^UpNext^Add</x:String>
+
+    <!-- rdar://105192186 - will need to add commands to MenuFlyoutItems below once parser plugin is implemented. -->
+    <MenuFlyout x:Key="NormalContextMenuFlyout">
+      <MenuFlyoutItem Text="{Binding Source={StaticResource ViewDetailsResourceKey}, Converter={StaticResource ResourceConverter}}" />
+      <MenuFlyoutItem Text="{Binding Source={StaticResource ShareResourceKey}, Converter={StaticResource ResourceConverter}}" />
+      <MenuFlyoutItem Text="{Binding Source={StaticResource AddToUpNextResourceKey}, Converter={StaticResource ResourceConverter}}" />
+    </MenuFlyout>
+
+    <MenuFlyout x:Key="UpNextContextMenuFlyout">
+      <MenuFlyoutItem Text="{Binding Source={StaticResource ViewDetailsResourceKey}, Converter={StaticResource ResourceConverter}}" />
+      <MenuFlyoutItem Text="{Binding Source={StaticResource ShareResourceKey}, Converter={StaticResource ResourceConverter}}" />
+      <MenuFlyoutItem Text="{Binding Source={StaticResource RemoveFromUpNextResourceKey}, Converter={StaticResource ResourceConverter}}" />
+    </MenuFlyout>
+
+    <ampc:KeyValueConverter x:Key="ContextMenuFlyoutSelector" DefaultValue="{StaticResource NormalContextMenuFlyout}">
+      <ampc:KeyValuePair Key="True" Value="{StaticResource UpNextContextMenuFlyout}" />
+    </ampc:KeyValueConverter>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <RelativePanel
+        Name="OverlayPanel"
+        Padding="10 5"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="#00333333"
+        >
+
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup x:Name="OverlayStates">
+            <VisualState x:Name="HideOverlay">
+              <VisualState.Setters>
+                <Setter Target="OptionalProgressBar.Visibility" Value="Visible" />
+              </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="ShowOverlay">
+              <VisualState.Setters>
+                <Setter Target="OverlayPanel.Background" Value="#55333333" />
+                <Setter Target="OptionalPlayButton.Visibility" Value="Visible" />
+                <Setter Target="OptionalTitle.Visibility" Value="Visible" />
+                <Setter Target="OptionalProgressBar.Visibility" Value="Visible" />
+                <Setter Target="OptionalRentalExpiryBadge.Visibility" Value="Collapsed" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+          <VisualStateGroup x:Name="CommonStates">
+            <VisualState x:Name="Normal">
+              <VisualState.Setters>
+                <Setter Target="OptionalContextMenu.Opacity" Value="0" />
+              </VisualState.Setters>
+            </VisualState>
+            <VisualState x:Name="PointerOver">
+              <VisualState.Setters>
+                <Setter Target="OptionalContextMenu.Opacity" Value="1" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalRentalExpiryBadge"
+          Margin="0 5 0 0"
+          Content="{Binding children.rentalExpiryBadge}"
+          RelativePanel.AlignLeftWithPanel="True"
+          RelativePanel.AlignTopWithPanel="True"
+          >
+          <DataTemplate>
+            <Grid
+              Name="TimePill"
+              Padding="8 2"
+              Background="#DA525E"
+              CornerRadius="10"
+              >
+              <TextBlock
+                Name="Time"
+                Style="{StaticResource RentalExpiryBadge}"
+                Tag="{Binding children.text.attributes.rentalExpirationTime, Converter={StaticResource ToDisplayString}}"
+                Text="{Binding Tag, RelativeSource={RelativeSource Self}, Converter={StaticResource ToUpper}}"
+                />
+            </Grid>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalTimeBadge"
+          Margin="0 5 0 0"
+          Content="{Binding children.timeBadge}"
+          RelativePanel.AlignLeftWithPanel="True"
+          RelativePanel.AlignTopWithPanel="True"
+          >
+          <DataTemplate>
+            <Grid
+              Name="TimePill"
+              Padding="8 2 8 2"
+              Background="{StaticResource SportsTimeBadgeBackgroundColor}"
+              CornerRadius="10"
+              >
+              <TextBlock
+                Name="Time"
+                Style="{StaticResource SportsTimeBadge}"
+                Text="{Binding children.text.value}"
+                />
+            </Grid>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalLiveBadge"
+          Margin="0 5 0 0"
+          Content="{Binding children.liveBadge}"
+          RelativePanel.AlignLeftWithPanel="True"
+          RelativePanel.AlignTopWithPanel="True"
+          >
+          <DataTemplate>
+            <Grid
+              Name="Pill"
+              Padding="8 2 8 2"
+              Background="{StaticResource SportsLiveBadgeBackgroundColor}"
+              CornerRadius="10"
+              >
+              <TextBlock
+                Name="Status"
+                Style="{StaticResource SportsLiveBadge}"
+                Text="{Binding children.text.value}"
+                />
+            </Grid>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalPlayButton"
+          Content="{Binding children.img}"
+          RelativePanel.AlignHorizontalCenterWithPanel="True"
+          RelativePanel.AlignVerticalCenterWithPanel="True"
+          Visibility="Collapsed"
+          >
+          <DataTemplate>
+            <Grid
+              Name="PlayButton"
+              Width="30"
+              Height="30"
+              Background="DodgerBlue"
+              CornerRadius="15.5"
+              >
+              <FontIcon
+                Margin="6 6 0 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="White"
+                Glyph="{StaticResource PlayFillGlyph}"
+                Scale="0.55,0.55,1.0"
+                Style="{StaticResource ChromeSymbolExtraExtraLargeFontIconStyle}"
+                Translation="2.5,2.5,0.0"
+                />
+            </Grid>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalLogo"
+          Margin="0 0 20 4"
+          Content="{Binding children.logo}"
+          RelativePanel.AlignBottomWithPanel="True"
+          RelativePanel.AlignRightWithPanel="True"
+          >
+          <DataTemplate>
+            <Grid>
+              <Grid.Resources>
+
+                <Views:ImageSize x:Key="LogoSize" Height="60" />
+                <Views:JsonImageSource x:Key="LogoSource"
+                  Img="{Binding}"
+                  RequestSize="{StaticResource LogoSize}"
+                  />
+                <Views:JsonImageBrush x:Key="LogoBrush" JsonImageSource="{StaticResource LogoSource}" />
+              </Grid.Resources>
+              <ampc:AspectRatioGrid
+                Name="Logo"
+                Height="15"
+                AspectRatio="{Binding layout.aspectRatio}"
+                Background="{Binding Brush, Source={StaticResource LogoBrush}}"
+                />
+            </Grid>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalProgressBar"
+          HorizontalAlignment="Stretch"
+          Content="{Binding children.progressBar}"
+          RelativePanel.AlignBottomWithPanel="True"
+          RelativePanel.AlignLeftWithPanel="True"
+          Visibility="Collapsed"
+          >
+          <DataTemplate>
+            <ProgressBar
+              Name="ProgressBar"
+              Width="{Binding ActualWidth, ElementName=OverlayPanel}"
+              Height="4"
+              HorizontalAlignment="Stretch"
+              Background="Gray"
+              BackgroundSizing="OuterBorderEdge"
+              CornerRadius="1"
+              Foreground="White"
+              Maximum="1"
+              Visibility="{Binding layout.highlightStyle, Converter={StaticResource ProgressBarVisibility}, FallbackValue='Collapsed'}"
+              Value="{Binding attributes.value}"
+              >
+              <ProgressBar.Resources>
+                <ResourceDictionary>
+                  <x:Double x:Key="ProgressBarTrackHeight">4</x:Double>
+                </ResourceDictionary>
+              </ProgressBar.Resources>
+            </ProgressBar>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <Views:OptionalContentPresenter
+          Name="OptionalTitle"
+          Content="{Binding children.title}"
+          RelativePanel.Above="OptionalProgressBar"
+          RelativePanel.AlignLeftWith="OptionalProgressBar"
+          Visibility="Collapsed"
+          >
+          <DataTemplate>
+            <TextBlock
+              Name="Title"
+              Style="{StaticResource OverlayTitleStyle}"
+              Text="{Binding value, Converter={StaticResource ToUpper}}"
+              />
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <!-- rdar://105192186 - uncomment/enable once ParserPlugin has been added for ContextMenuEventDataSource. -->
+        <Views:OptionalContentPresenter
+          Name="OptionalContextMenu"
+          Views:CommandEvents.HandlesTappedEvent="True"
+          Content="{Binding children.contextMenuButton}"
+          Opacity="0"
+          RelativePanel.Above="OptionalProgressBar"
+          RelativePanel.AlignRightWithPanel="True"
+          >
+          <!--<DataTemplate>
+            <Button
+              Name="ContextMenuButton"
+              Flyout="{Binding children.isUpNext.value, FallbackValue={StaticResource NormalContextMenuFlyout}, Converter={StaticResource ContextMenuFlyoutSelector}}"
+              Template="{StaticResource CircleIconButton}"
+              ToolTipService.ToolTip="More Commands"
+              />
+          </DataTemplate>-->
+        </Views:OptionalContentPresenter>
+
+      </RelativePanel>
+
+    </ControlTemplate>
+  </Control.Template>
+</Control>

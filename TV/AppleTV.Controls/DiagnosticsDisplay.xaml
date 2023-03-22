@@ -1,0 +1,91 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+    <Views:UTCmsToLocalTimeString x:Key="ToTimeString" />
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <Grid>
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Background="LightGray">
+          <TextBlock
+            Margin="10"
+            FontSize="24"
+            FontWeight="SemiBold"
+            Text="Entries"
+            />
+        </Grid>
+
+        <ListView
+          Name="Selector"
+          Grid.Row="1"
+          ItemsSource="{Binding Entries}"
+          SelectionMode="Single"
+          >
+          <ListView.Resources>
+            <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Opacity="0.2" Color="Navy" />
+            <SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Opacity="0.2" Color="Navy" />
+            <SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Opacity="0.05" Color="Navy" />
+          </ListView.Resources>
+          <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+              <Setter Property="MinHeight" Value="0" />
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            </Style>
+          </ListView.ItemContainerStyle>
+          <ListView.ItemTemplate>
+            <DataTemplate>
+              <TextBlock
+                HorizontalAlignment="Stretch"
+                FontFamily="Consolas"
+                FontSize="24"
+                >
+                <ToolTipService.ToolTip>
+                  <ToolTip Views:DiagnosticsDisplay.DeltaData="{Binding SelectedItem, ElementName=Selector}" />
+                </ToolTipService.ToolTip>
+                <Run Text="[" />
+                <Run Text="{Binding Time, Converter={StaticResource ToTimeString}}" />
+                <Run Text="] -" />
+                <Run Text="{Binding Name}" />
+              </TextBlock>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+
+        <Grid
+          Grid.Row="2"
+          Padding="12"
+          Background="LightGray"
+          >
+          <StackPanel
+            HorizontalAlignment="Right"
+            Orientation="Horizontal"
+            Spacing="20"
+            >
+            <Button Command="{Binding FlushEntries}" Content="Flush" />
+            <Button Command="{Binding ClearEntries}" Content="Clear" />
+          </StackPanel>
+        </Grid>
+
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

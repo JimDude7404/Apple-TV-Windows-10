@@ -1,0 +1,110 @@
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Name="ScoreboardRoot"
+  >
+  <Control.Resources>
+    <DataTemplate x:Key="TeamNamesAndLogosTemplate">
+      <!-- Using a grid here instead of a stackpanel ensures that team names are trimmed if they overflow. -->
+      <Grid Name="TeamNameAndLogo">
+        <Grid.Resources>
+          <Views:ImageSize x:Key="TeamLogoSize"
+            Width="32"
+            Height="32"
+            />
+
+          <Views:JsonImageSource x:Key="TeamLogoSource"
+            Img="{Binding children.img}"
+            RequestSize="{StaticResource TeamLogoSize}"
+            ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+            />
+
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Image
+          Name="TeamLogo"
+          Grid.Column="0"
+          Margin="0 0 5 3"
+          Source="{Binding ImageSource, Source={StaticResource TeamLogoSource}}"
+          />
+
+        <TextBlock
+          Name="TeamName"
+          Grid.Column="1"
+          MaxWidth="400"
+          MaxLines="1"
+          Style="{StaticResource LargeTitleTextBlockStyle}"
+          Text="{Binding children.title.value}"
+          TextTrimming="CharacterEllipsis"
+          TextWrapping="NoWrap"
+          />
+      </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="ScoreTextTemplate">
+      <TextBlock
+        Name="Score"
+        Foreground="{StaticResource LabelTertiaryVibrant}"
+        MaxLines="1"
+        Style="{StaticResource LargeTitleTextBlockStyle}"
+        Text="{Binding}"
+        TextTrimming="CharacterEllipsis"
+        />
+    </DataTemplate>
+
+  </Control.Resources>
+  <!--
+    ______0_________1_____________2_______
+    0                                     |
+    |  Team 1 Logo | Spacer | Score (opt.)|
+    |_____________________________|_______|
+    1
+    |  Team 2 Logo | Spacer | Score (opt.)|
+    ______________________________________|
+  -->
+  <Control.Template>
+    <ControlTemplate>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <!-- Spacer so scores are aligned regardless of team name size (from spec, 20pt = 27px) -->
+          <ColumnDefinition Width="27" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <!-- Team logos and names (should always be present in TeamTitles) -->
+        <Views:CollectionUniformGrid
+          Grid.Row="0"
+          Grid.RowSpan="2"
+          ItemTemplate="{StaticResource TeamNamesAndLogosTemplate}"
+          ItemsSource="{Binding TeamTitles.children, ElementName=ScoreboardRoot}"
+          />
+        <!-- Scores; optionally present in the scoreboard -->
+        <Views:OptionalContentPresenter
+          Name="OptionalScores"
+          Grid.Row="0"
+          Grid.RowSpan="2"
+          Grid.Column="2"
+          HorizontalAlignment="Left"
+          Content="{Binding Scoreboard, ElementName=ScoreboardRoot}"
+          >
+          <DataTemplate>
+            <Views:CollectionUniformGrid ItemTemplate="{StaticResource ScoreTextTemplate}" ItemsSource="{Binding supplementaryData.scores[0]}" />
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

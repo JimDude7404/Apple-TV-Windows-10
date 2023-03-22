@@ -1,0 +1,105 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  AutomationProperties.Name="{Binding attributes.accessibilityText}"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+
+    <Views:FirstOfTypeConverter x:Key="SelectCollectionGroupChild" ItemType="collectionGroup" />
+    <Views:FirstOfTypeConverter x:Key="SelectTitleChild" ItemType="title" />
+
+    <Views:ItemTypeTemplateSelector x:Key="FooterTemplateSelector">
+      <Views:ItemTypeTemplate ItemType="button">
+        <DataTemplate>
+          <Grid Background="{ThemeResource AccentButtonBackground}" CornerRadius="6">
+            <Button
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Center"
+              AutomationProperties.Name="{Binding attributes.accessibilityText}"
+              Command="{Binding routerDataSource.selectEventDataSource}"
+              CornerRadius="6"
+              Style="{StaticResource NoHoverBackgroundButtonStyle}"
+              >
+              <TextBlock
+                Padding="10"
+                DataContext="{Binding children, Converter={StaticResource SelectTitleChild}}"
+                Style="{StaticResource Title3TextBlockStyle}"
+                Text="{Binding value}"
+                />
+            </Button>
+          </Grid>
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+    </Views:ItemTypeTemplateSelector>
+
+    <Views:ItemTypeTemplateSelector x:Key="CollectionGroupsTemplateSelector">
+      <Views:ItemTypeTemplate ItemType="offerListLockup">
+        <DataTemplate>
+          <Views:OfferListLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+    </Views:ItemTypeTemplateSelector>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate TargetType="Views:ListCollectionView">
+      <Grid
+        Name="ListCollectionContainer"
+        MaxWidth="{StaticResource MaxContentAreaWidth}"
+        Margin="40 0 40 40"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        >
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <ScrollViewer
+          Name="ListCollectionContentScroller"
+          Grid.Row="0"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          HorizontalScrollMode="Disabled"
+          VerticalScrollBarVisibility="Hidden"
+          VerticalScrollMode="Auto"
+          >
+          <Views:CollectionStackPanel
+            Name="ListCollectionContent"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            DataContext="{Binding collectionGroups, Converter={StaticResource SelectCollectionGroupChild}}"
+            ItemTemplate="{StaticResource CollectionGroupsTemplateSelector}"
+            ItemsSource="{Binding children}"
+            Spacing="5"
+            />
+        </ScrollViewer>
+
+        <Views:OptionalContentPresenter
+          Name="ListCollectionFooter"
+          Grid.Row="1"
+          Margin="0 20 0 0"
+          HorizontalAlignment="Stretch"
+          Content="{Binding footer}"
+          >
+          <DataTemplate>
+            <Views:CollectionStackPanel
+              HorizontalAlignment="Stretch"
+              ItemTemplate="{StaticResource FooterTemplateSelector}"
+              ItemsSource="{Binding offerSelectionFooter.children}"
+              Spacing="10"
+              />
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

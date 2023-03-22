@@ -1,0 +1,25 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  IsTabStop="False"
+  >
+  <Control.Resources>
+    <Views:FirstOfTypeConverter x:Key="SelectListCollectionChild" ItemType="listCollection" />
+  </Control.Resources>
+  <Control.Template>
+    <ControlTemplate TargetType="Views:OfferSelectionTemplateView">
+
+      <Views:OptionalContentPresenter Content="{Binding children, Converter={StaticResource SelectListCollectionChild}}" HorizontalAlignment="Stretch">
+        <DataTemplate>
+          <Views:ListCollectionView />
+        </DataTemplate>
+      </Views:OptionalContentPresenter>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

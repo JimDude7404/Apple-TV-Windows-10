@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160px" height="160px" viewBox="0 0 160 160" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>_Assets/Vuze/Content Badge/CornerGradientCheck</title>
+    <defs>
+        <linearGradient x1="100%" y1="100%" x2="55%" y2="55%" id="linearGradient-1">
+            <stop stop-color="#000000" stop-opacity="0.29" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0.0663169643" offset="72.0643335%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="_Assets/Vuze/Content-Badge/CornerGradientCheck" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="160" height="160"></rect>
+        <path d="M142.977,134.102 L135.467,141.784 C135.292,141.962 135.062,142.052 134.833,142.052 C134.603,142.052 134.373,141.962 134.198,141.784 L131.018,138.53 C130.667,138.172 130.667,137.591 131.018,137.233 C131.368,136.875 131.936,136.875 132.286,137.233 L134.833,139.838 L141.709,132.805 C142.059,132.447 142.627,132.447 142.977,132.805 C143.327,133.163 143.327,133.744 142.977,134.102 M137,126 C130.925,126 126,130.924 126,137 C126,143.075 130.925,148 137,148 C143.075,148 148,143.075 148,137 C148,130.924 143.075,126 137,126" id="Fill-1" fill="#FFFFFF"></path>
+    </g>
+</svg>

@@ -1,0 +1,271 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="LockupView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}"
+  >
+
+  <Control.Resources>
+
+    <!-- Overlay Styles -->
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+          <!-- these colors are based on displaying over the background image and must not change based on OS light/dark theme setting -->
+          <SolidColorBrush x:Key="OverlayTextForegroundColor" Color="White" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+          <SolidColorBrush x:Key="OverlayTextForegroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+
+    <Views:StaticResourceValue x:Key="LockDisplayType" Value="{Binding DisplayType, ElementName=LockupView}" />
+    <Views:StaticResourceValue x:Key="LockImgTheme" Value="{Binding ImgTheme, ElementName=LockupView}" />
+    <Views:StaticResourceValue x:Key="TextForegroundValue" Value="{Binding Value, Source={StaticResource LockImgTheme}, Converter={StaticResource TextForegroundSelector}}" />
+
+    <Style x:Key="EditorialOverlayTitleStyle"
+      BasedOn="{StaticResource BodyEmphTextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="MaxLines" Value="2" />
+      <Setter Property="HorizontalTextAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+      <Setter Property="Foreground" Value="{ThemeResource OverlayTextForegroundColor}" />
+    </Style>
+    <Style x:Key="NavbrickOverlayTitleStyle"
+      BasedOn="{StaticResource LargeTitleEmphTextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="MaxLines" Value="3" />
+      <Setter Property="HorizontalTextAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Foreground" Value="{ThemeResource OverlayTextForegroundColor}" />
+    </Style>
+
+    <!-- Overlay Stack Panel Styles -->
+
+    <Style x:Key="OverlayCollectionEditorialStyle" TargetType="Views:CollectionStackPanel">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+    <Style x:Key="OverlayCollectionNavbrickStyle" TargetType="Views:CollectionStackPanel">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <ampc:KeyValueConverter x:Key="OverlayCollectionStyle" DefaultValue="{StaticResource OverlayCollectionEditorialStyle}">
+      <ampc:KeyValuePair Key="navBrick" Value="{StaticResource OverlayCollectionNavbrickStyle}" />
+    </ampc:KeyValueConverter>
+
+    <!-- Title TextBlock Styles -->
+    <Style x:Key="LockupTitleStyle"
+      BasedOn="{StaticResource Title3TextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="MaxLines" Value="1" />
+      <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+    <Style x:Key="PlayHistoryLockupTitleStyle"
+      BasedOn="{StaticResource BodyTextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="MaxLines" Value="2" />
+    </Style>
+
+    <ampc:KeyValueConverter x:Key="TitleStyle" DefaultValue="{StaticResource LockupTitleStyle}">
+      <ampc:KeyValuePair Key="playHistoryLockup" Value="{StaticResource PlayHistoryLockupTitleStyle}" />
+    </ampc:KeyValueConverter>
+
+    <!-- Subtitle Textblock Styles -->
+    <Style x:Key="LockupSubtitleStyle"
+      BasedOn="{StaticResource CalloutTextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="MaxLines" Value="3" />
+    </Style>
+    <Style x:Key="PlayHistoryLockupSubtitleStyle"
+      BasedOn="{StaticResource SubheadEmphTextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="MaxLines" Value="1" />
+    </Style>
+    <Style x:Key="sportsExtrasLockupSubtitleStyle"
+      BasedOn="{StaticResource CalloutTextBlockStyle}"
+      TargetType="TextBlock"
+      >
+      <Setter Property="Opacity" Value="{StaticResource SecondaryTextOpacity}" />
+    </Style>
+
+    <ampc:KeyValueConverter x:Key="SubtitleStyle" DefaultValue="{StaticResource LockupSubtitleStyle}">
+      <ampc:KeyValuePair Key="playHistoryLockup" Value="{StaticResource PlayHistoryLockupSubtitleStyle}" />
+      <ampc:KeyValuePair Key="sportsExtrasLockup" Value="{StaticResource sportsExtrasLockupSubtitleStyle}" />
+    </ampc:KeyValueConverter>
+
+    <!-- Title ToUpper Flags -->
+    <x:Boolean x:Key="NotUppercase">true</x:Boolean>
+    <x:Boolean x:Key="ToUppercase">false</x:Boolean>
+
+    <ampc:KeyValueConverter x:Key="TitleToUpper" DefaultValue="{StaticResource NotUppercase}">
+      <ampc:KeyValuePair Key="relatedLockup" Value="{StaticResource ToUppercase}" />
+    </ampc:KeyValueConverter>
+
+    <ampc:KeyValueConverter x:Key="SubtitleToUpper" DefaultValue="{StaticResource NotUppercase}">
+      <ampc:KeyValuePair Key="playHistoryLockup" Value="{StaticResource ToUppercase}" />
+    </ampc:KeyValueConverter>
+
+    <Views:FirstOfTypeConverter x:Key="SelectImgChild" ItemType="img" />
+    <Views:StaticResourceValue x:Key="ImgChild" Value="{Binding children, Converter={StaticResource SelectImgChild}}" />
+    <Views:FirstOfTypeConverter x:Key="SelectLockupOverlayChild" ItemType="lockupOverlay" />
+
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding Value, Source={StaticResource ImgChild}}"
+      RequestSize="{StaticResource LockupDefaultSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+
+    <Views:ChildrenToVisibilityConverter x:Key="ChildrenToVisibilityConverter" />
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <StackPanel Name="LockupContainer">
+
+        <!-- Tapped event is bound from code behind as {Binding } doesn't work on events. -->
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup x:Name="OverlayStates">
+            <VisualState x:Name="HideOverlay" />
+            <VisualState x:Name="ShowOverlay">
+              <VisualState.Setters>
+                <Setter Target="HoverOverlay.Visibility" Value="Visible" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <!-- Image Grid: Once Artwork image implement the AspectRatioGrid, change this to a normal grid. -->
+        <ampc:AspectRatioGrid Name="LockupImg"
+          Views:JsonImage.FixDirection="True"
+          Views:JsonImage.LoadingCurtain="{StaticResource ImgSource}"
+          AspectRatio="{Binding AspectRatio, Source={StaticResource ImgSource}}"
+          Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="{StaticResource GridItemCornerRadius}"
+          >
+
+          <Views:OptionalContentPresenter Content="{Binding children.editorialOverlay}">
+            <DataTemplate>
+              <Grid Name="Gradient"
+                CornerRadius="{StaticResource GridItemCornerRadius}"
+                Visibility="{Binding children, Converter={StaticResource ChildrenToVisibilityConverter}}"
+                >
+                <Grid.Background>
+                  <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
+                    <GradientStop Offset="0.7" Color="{Binding layout.backgroundColor.colorValues[0]}" />
+                    <GradientStop Offset="1.0" Color="{Binding layout.backgroundColor.colorValues[1]}" />
+                  </LinearGradientBrush>
+                </Grid.Background>
+              </Grid>
+            </DataTemplate>
+          </Views:OptionalContentPresenter>
+
+          <Views:OptionalContentPresenter Name="lockupOverlay" Content="{Binding children, Converter={StaticResource SelectLockupOverlayChild}}">
+            <DataTemplate>
+              <Views:UnifiedOverlayView />
+            </DataTemplate>
+          </Views:OptionalContentPresenter>
+
+          <Views:OptionalContentPresenter Name="sportsOverlay" Content="{Binding children.sportsOverlay}">
+            <DataTemplate>
+              <Views:UnifiedOverlayView />
+            </DataTemplate>
+          </Views:OptionalContentPresenter>
+
+          <Views:CollectionStackPanel Name="OverlayCollection"
+            Margin="0 0 0 7"
+            Padding="20 0"
+            ItemsSource="{Binding children}"
+            Style="{Binding DisplayType, ElementName=LockupView, Converter={StaticResource OverlayCollectionStyle}}"
+            >
+            <Views:CollectionStackPanel.Resources>
+              <Views:StaticResourceValue x:Key="OverlayTextForegroundValue" Value="{Binding Value.theme, Converter={StaticResource TextForegroundSelector}, Source={StaticResource ImgChild}}" />
+            </Views:CollectionStackPanel.Resources>
+            <Views:ItemTypeTemplateSelector>
+
+              <Views:ItemTypeTemplate ItemType="editorialOverlay">
+                <DataTemplate>
+                  <TextBlock
+                    Foreground="{Binding Value, Source={StaticResource OverlayTextForegroundValue}}"
+                    Style="{StaticResource EditorialOverlayTitleStyle}"
+                    Text="{Binding children.title.value}"
+                    />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+
+              <Views:ItemTypeTemplate ItemType="navbrickOverlay">
+                <DataTemplate>
+                  <TextBlock
+                    Foreground="{Binding Value, Source={StaticResource OverlayTextForegroundValue}}"
+                    Style="{StaticResource NavbrickOverlayTitleStyle}"
+                    Text="{Binding children.title.value}"
+                    />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+
+            </Views:ItemTypeTemplateSelector>
+          </Views:CollectionStackPanel>
+
+        </ampc:AspectRatioGrid>
+
+        <Views:CollectionStackPanel Name="TextCollection"
+          Margin="0 6 0 0"
+          ItemsSource="{Binding children}"
+          Spacing="2"
+          >
+          <Views:ItemTypeTemplateSelector>
+
+            <Views:ItemTypeTemplate ItemType="text">
+              <DataTemplate>
+                <TextBlock Name="text"
+                  Opacity="{ThemeResource SecondaryTextOpacity}"
+                  Style="{StaticResource FootnoteEmphTextBlockStyle}"
+                  Text="{Binding value, Converter={StaticResource ToUpper}}"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+
+            <Views:ItemTypeTemplate ItemType="title">
+              <DataTemplate>
+                <TextBlock Name="title"
+                  Views:OptionalColor.Foreground="{Binding Value, Source={StaticResource TextForegroundValue}}"
+                  Style="{Binding Value, Source={StaticResource LockDisplayType}, Converter={StaticResource TitleStyle}}"
+                  Text="{Binding value, Converter={StaticResource ToUpper}, ConverterParameter={Binding Value, Source={StaticResource LockDisplayType}, Converter={StaticResource TitleToUpper}}}"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+
+            <Views:ItemTypeTemplate ItemType="subtitle">
+              <DataTemplate>
+                <TextBlock Name="subtitle"
+                  Style="{Binding Value, Source={StaticResource LockDisplayType}, Converter={StaticResource SubtitleStyle}}"
+                  Text="{Binding value, Converter={StaticResource ToUpper}, ConverterParameter={Binding Value, Source={StaticResource LockDisplayType}, Converter={StaticResource SubtitleToUpper}}}"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+
+          </Views:ItemTypeTemplateSelector>
+        </Views:CollectionStackPanel>
+
+      </StackPanel>
+
+    </ControlTemplate>
+  </Control.Template>
+</Control>

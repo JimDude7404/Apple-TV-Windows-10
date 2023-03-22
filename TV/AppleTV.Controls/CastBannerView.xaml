@@ -1,0 +1,132 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+    <Views:ImageSize x:Key="ImgSize" Height="180" />
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding children.monogram.children.img}"
+      RequestSize="{StaticResource ImgSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+
+    <Views:InverseVisibilityConverter x:Key="InverseVisibility" />
+    <Views:AttributesToInitialsConverter x:Key="AttributesToInitials" />
+
+    <ControlTemplate x:Key="DescriptionTemplate">
+      <Grid>
+        <VisualStateManager.VisualStateGroups>
+          <VisualStateGroup x:Name="CommonStates">
+            <VisualStateGroup.Transitions>
+              <VisualTransition GeneratedDuration="0:0:0.3" />
+            </VisualStateGroup.Transitions>
+            <VisualState x:Name="Normal" />
+            <VisualState x:Name="PointerOver">
+              <VisualState.Setters>
+                <Setter Target="MoreButtonOverlay.Opacity" Value="1" />
+              </VisualState.Setters>
+            </VisualState>
+          </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <TextBlock Name="DescriptionText"
+          ampc:TextBlock.TaggedText="{Binding description.value}"
+          MaxLines="4"
+          Style="{StaticResource Title3TextBlockStyle}"
+          TextTrimming="CharacterEllipsis"
+          TextWrapping="Wrap"
+          />
+
+        <Button Name="MoreButtonOverlay"
+          x:Uid="MoreButton"
+          Margin="0 0 -40 -7"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Bottom"
+          AutomationProperties.AccessibilityView="Raw"
+          BorderThickness="0"
+          Foreground="{StaticResource TextOverflowButtonForegroundColor}"
+          Opacity="0"
+          Visibility="{Binding IsTextTrimmed, ElementName=DescriptionText, Converter={StaticResource BoolToVisibility}}"
+          >
+          <Button.Flyout>
+            <Flyout>
+              <TextBlock
+                MaxWidth="500"
+                ampc:TextBlock.TaggedText="{Binding description.value}"
+                Style="{StaticResource Title3TallTextBlockStyle}"
+                />
+            </Flyout>
+          </Button.Flyout>
+        </Button>
+
+      </Grid>
+    </ControlTemplate>
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <Grid Name="PeopleBanner"
+        Margin="40"
+        HorizontalAlignment="Center"
+        DataContext="{Binding children}"
+        >
+        <Grid.ColumnDefinitions>
+          <!-- This should be smaller than the minimum allowed window size. This content is always centered and doesn't respond to resizes. -->
+          <ColumnDefinition MaxWidth="220" />
+          <ColumnDefinition MaxWidth="400" />
+        </Grid.ColumnDefinitions>
+        <ampc:AspectRatioGrid Name="monogram"
+          Grid.Column="0"
+          Margin="0 0 40 0"
+          Views:JsonImage.LoadingCurtain="{StaticResource ImgBrush}"
+          Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          IsRound="True"
+          Visibility="{Binding monogram.children.img, Converter={StaticResource NotNullToVisibilityConverter}}"
+          />
+        <ampc:AspectRatioGrid Name="FallbackInitials"
+          Grid.Column="0"
+          Margin="0 0 40 0"
+          Background="{ThemeResource SecondaryTextForegroundColor}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          IsRound="True"
+          Visibility="{Binding Visibility, ElementName=monogram, Converter={StaticResource InverseVisibility}}"
+          >
+          <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            RequestedTheme="Dark"
+            Style="{StaticResource MonogramTextBlockStyleLarge}"
+            Text="{Binding monogram.attributes, Converter={StaticResource AttributesToInitials}}"
+            />
+        </ampc:AspectRatioGrid>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+          <TextBlock
+            Margin="0 5 0 10"
+            ampc:TextBlock.TaggedText="{Binding title.value}"
+            Style="{StaticResource ExtraLargeTitleEmphTextBlockStyle}"
+            />
+          <ContentControl Name="Description"
+            Views:CommonPointerVisualStates.Enabled="True"
+            Content="{Binding}"
+            IsTabStop="False"
+            Template="{StaticResource DescriptionTemplate}"
+            />
+        </StackPanel>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

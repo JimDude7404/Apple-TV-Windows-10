@@ -1,0 +1,44 @@
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}"
+  >
+
+  <Control.Resources>
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding children.img}"
+      RequestSize="{StaticResource LockupDefaultSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <StackPanel Name="sportsCard">
+
+        <ampc:AspectRatioGrid
+          Views:JsonImage.LoadingCurtain="{StaticResource ImgBrush}"
+          AspectRatio="{Binding children.img.layout.aspectRatio, FallbackValue={StaticResource AspectRatio_16_9}}"
+          Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="{StaticResource GridItemCornerRadius}"
+          >
+
+          <Views:UnifiedOverlayView Name="SportsOverlay" DataContext="{Binding children.sportsOverlay}" />
+
+        </ampc:AspectRatioGrid>
+
+        <TextBlock Style="{StaticResource Title3TextBlockStyle}" Text="{Binding children.title.value}" />
+        <TextBlock Style="{StaticResource Caption2TextBlockStyle}" Text="{Binding children.subtitle.value}" />
+
+      </StackPanel>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

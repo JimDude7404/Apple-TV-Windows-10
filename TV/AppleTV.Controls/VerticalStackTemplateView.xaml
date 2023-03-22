@@ -1,0 +1,188 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+
+    <Views:StaticResourceValue x:Key="SupplementaryData" Value="{Binding supplementaryData}" />
+
+    <Views:ItemTypeTemplateSelector x:Key="VerticalStackChildTemplates">
+
+      <Views:ItemTypeTemplateSelector.DefaultTemplate>
+        <DataTemplate>
+          <!-- debugging helper -->
+          <!--<TextBlock Text="{Binding}" />-->
+        </DataTemplate>
+      </Views:ItemTypeTemplateSelector.DefaultTemplate>
+
+      <Views:ItemTypeTemplate ItemType="carousel">
+        <DataTemplate>
+          <Views:CarouselView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="castBanner">
+        <DataTemplate>
+          <Views:CastBannerView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="channelBanner">
+        <DataTemplate>
+          <Views:ChannelBannerView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="epicInline">
+        <DataTemplate>
+          <Views:EpicInlineView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="mediaShowcaseCollection">
+        <DataTemplate>
+          <Views:MediaShowcaseCollectionView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="flowcase">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="gridCollection">
+        <DataTemplate>
+          <Views:GridCollectionView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="horizontalMultiGroupCollection">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView
+            DecorationType="{Binding attributes.decorationType}"
+            IsMultiGroup="True"
+            SnapPointsType="None"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="horizontalMultiRowCollection">
+        <DataTemplate>
+          <Views:HorizontalMultiRowCollectionView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="orthogonalCollection">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView DecorationType="{Binding attributes.decorationType}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="roomBanner">
+        <DataTemplate>
+          <Views:RoomBannerView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="upNextCollection">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView DecorationType="{Binding attributes.decorationType}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <!-- Canonical Specific -->
+      <Views:ItemTypeTemplate ItemType="canonicalBanner">
+        <DataTemplate>
+          <Views:CanonicalBannerView SupplementaryData="{Binding Value, Source={StaticResource SupplementaryData}}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="canonicalFooter">
+        <DataTemplate>
+          <Views:CanonicalFooterView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="canonicalInfoCollection">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView Background="{ThemeResource CanonicalNavigationBackgroundColor}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="episodeCollection">
+        <DataTemplate>
+          <Views:EpisodeCollectionView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+      <!-- End Canonical Specific -->
+
+      <!-- Sports Canonical Specific -->
+      <Views:ItemTypeTemplate ItemType="sportsCanonicalBanner">
+        <DataTemplate>
+          <Views:SportsCanonicalBannerView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+      <!-- End Sports Canonical Specific -->
+
+      <!-- Search Specific -->
+      <Views:ItemTypeTemplate ItemType="searchCollection">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView DecorationType="{Binding attributes.decorationType}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="searchTopResultsCollection">
+        <DataTemplate>
+          <Views:OrthogonalCollectionView DecorationType="{Binding attributes.decorationType}" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+      <!-- End Search Specific -->
+
+    </Views:ItemTypeTemplateSelector>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+      <ListView Name="verticalStackTemplate"
+        Views:ItemsAutomationId.Enable="True"
+        Views:ScrollRetainer.HasMixedHeightItems="True"
+        Views:ScrollRetainer.Retain="True"
+        IncrementalLoadingThreshold="2"
+        IncrementalLoadingTrigger="Edge"
+        ItemTemplateSelector="{StaticResource VerticalStackChildTemplates}"
+        ItemsSource="{Binding children}"
+        ScrollViewer.HorizontalScrollMode="Disabled"
+        ScrollViewer.VerticalScrollBarVisibility="Hidden"
+        ScrollViewer.VerticalScrollMode="Auto"
+        SelectionMode="None"
+        >
+        <ListView.ItemsPanel>
+          <ItemsPanelTemplate>
+            <ItemsStackPanel Orientation="Vertical" />
+          </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="MinHeight" Value="0" />
+            <!--
+              HorizontalContentAlignment="Stretch" causes the rows to be as wide
+              as possible, but then stay centered when they reach their max.
+            -->
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+          </Style>
+        </ListView.ItemContainerStyle>
+      </ListView>
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

@@ -1,0 +1,155 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <!-- outer grid stretches the width of the content area even if it's wider than the max content area width -->
+      <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
+        <!-- inner grid constrains content to be no wider than max content area width -->
+        <Grid
+          Name="CollectionGroupsUIRoot"
+          MinWidth="{StaticResource MinContentAreaWidth}"
+          MaxWidth="{StaticResource MaxContentAreaWidth}"
+          Views:SizeChangedRelayer.Enabled="True"
+          >
+
+          <Grid.Resources>
+
+            <Views:StaticResourceValue x:Key="LockupDisplayType" Value="{Binding contextDataRef.displayType}" />
+
+            <Views:ItemTypeTemplateSelector x:Key="LockupTemplateSelector">
+
+              <Views:ItemTypeTemplate ItemType="lockup">
+                <DataTemplate>
+                  <Views:LockupView DisplayType="{Binding Value, Source={StaticResource LockupDisplayType}}" />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+
+              <!-- See All Specific -->
+              <Views:ItemTypeTemplate ItemType="editorialLockup">
+                <DataTemplate>
+                  <Views:EditorialLockupView />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+
+              <Views:ItemTypeTemplate ItemType="ordinalLockup">
+                <DataTemplate>
+                  <Views:OrdinalLockupView />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+
+              <Views:ItemTypeTemplate ItemType="sportsCard">
+                <DataTemplate>
+                  <Views:SportsCardView />
+                </DataTemplate>
+              </Views:ItemTypeTemplate>
+              <!-- End See All Specific -->
+
+            </Views:ItemTypeTemplateSelector>
+
+            <!--
+              -60 width adjustment to account for left and right buttons (40px x2) and the Padding around the
+              ListView (20px). This adjustment is to compute the viewport width that the lockup items need to
+              fit within, so relevant to item width computation.
+            -->
+            <Views:AdaptiveLayout x:Key="GridStyle"
+              CurrentWidth="{Binding (Views:SizeChangedRelayer.Width), ElementName=CollectionGroupsUIRoot}"
+              LayoutEnvironment="{Binding layout.gridStyle, Converter={StaticResource GridStyleConverter}}"
+              WidthAdjustment="-60"
+              />
+          </Grid.Resources>
+
+          <!-- prototype is rendered behind the "shelf" so that it doesn't make the shelf taller by its existence -->
+          <Views:PrototypeMeasurer Name="Prototype" AdaptiveLayout="{StaticResource GridStyle}">
+            <!-- Padding matches the ItemContainerStyle below to correct size calculations -->
+            <ContentControl
+              Padding="10"
+              HorizontalContentAlignment="Stretch"
+              Content="{Binding prototype.children[0]}"
+              ContentTemplateSelector="{StaticResource LockupTemplateSelector}"
+              IsTabStop="False"
+              />
+          </Views:PrototypeMeasurer>
+
+          <StackPanel>
+
+            <!-- header -->
+            <Views:CollectionStackPanel
+              Name="header"
+              Margin="42 10 42 0"
+              ItemsSource="{Binding header.collectionHeader.children}"
+              >
+              <Views:ItemTypeTemplateSelector>
+
+                <Views:ItemTypeTemplate ItemType="title">
+                  <DataTemplate>
+                    <TextBlock Style="{StaticResource Title2EmphTextBlockStyle}" Text="{Binding value}" />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="subtitle">
+                  <DataTemplate>
+                    <TextBlock
+                      Foreground="{ThemeResource SecondaryTextForegroundColor}"
+                      Style="{StaticResource BodyTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+              </Views:ItemTypeTemplateSelector>
+            </Views:CollectionStackPanel>
+
+            <!-- lockpus -->
+            <Grid Grid.Column="1">
+              <GridView
+                Name="lockups"
+                Margin="30 0"
+                Views:ItemsAutomationId.Enable="True"
+                ItemTemplateSelector="{StaticResource LockupTemplateSelector}"
+                ItemsSource="{Binding collectionGroups[0].children}"
+                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                ScrollViewer.VerticalScrollMode="Disabled"
+                SelectionMode="None"
+                >
+                <GridView.ItemContainerStyle>
+                  <Style TargetType="GridViewItem">
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="IsTabStop" Value="False" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                  </Style>
+                </GridView.ItemContainerStyle>
+                <GridView.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <ItemsWrapGrid
+                      CacheLength="0"
+                      ItemHeight="{Binding ItemHeight, ElementName=Prototype}"
+                      ItemWidth="{Binding ItemWidth, Source={StaticResource GridStyle}}"
+                      Orientation="Horizontal"
+                      />
+                  </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+              </GridView>
+            </Grid>
+
+          </StackPanel>
+
+        </Grid>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

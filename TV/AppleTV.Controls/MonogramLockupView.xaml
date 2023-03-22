@@ -1,0 +1,93 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="MonogramRoot"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}"
+  >
+
+  <Control.Resources>
+    <Views:ImageSize x:Key="ImgSize" Height="142" />
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding children.monogram.children.img}"
+      RequestSize="{StaticResource ImgSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+    <Views:InverseVisibilityConverter x:Key="InverseVisibility" />
+    <Views:AttributesToInitialsConverter x:Key="AttributesToInitials" />
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <StackPanel>
+        <ampc:AspectRatioGrid Name="monogramLockup"
+          VerticalAlignment="Top"
+          Views:JsonImage.FixDirection="True"
+          Views:JsonImage.LoadingCurtain="{StaticResource ImgSource}"
+          Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          IsRound="True"
+          Visibility="{Binding Brush, Source={StaticResource ImgBrush}, Converter={StaticResource NotNullToVisibilityConverter}}"
+          />
+
+        <ampc:AspectRatioGrid Name="FallbackInitials"
+          VerticalAlignment="Top"
+          Background="{ThemeResource SecondaryTextForegroundColor}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          IsRound="True"
+          Visibility="{Binding Visibility, ElementName=monogramLockup, Converter={StaticResource InverseVisibility}}"
+          >
+          <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="White"
+            Style="{StaticResource MonogramTextBlockStyle}"
+            Text="{Binding children.monogram.attributes, Converter={StaticResource AttributesToInitials}}"
+            />
+        </ampc:AspectRatioGrid>
+
+        <!-- title texts below monogram image -->
+        <Views:CollectionStackPanel ItemsSource="{Binding children}">
+          <Views:ItemTypeTemplateSelector>
+            <Views:ItemTypeTemplate ItemType="title">
+              <DataTemplate>
+                <TextBlock
+                  Margin="0 8 0 0"
+                  ampc:TextBlock.TaggedText="{Binding value}"
+                  MaxLines="2"
+                  Style="{StaticResource CalloutTextBlockStyle}"
+                  TextAlignment="Center"
+                  TextTrimming="CharacterEllipsis"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+
+            <Views:ItemTypeTemplate ItemType="subtitle">
+              <DataTemplate>
+                <TextBlock
+                  Margin="0 6 0 0"
+                  ampc:TextBlock.TaggedText="{Binding value}"
+                  Foreground="{ThemeResource SecondaryTextForegroundColor}"
+                  MaxLines="1"
+                  Style="{StaticResource CalloutTextBlockStyle}"
+                  TextAlignment="Center"
+                  TextTrimming="CharacterEllipsis"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+          </Views:ItemTypeTemplateSelector>
+        </Views:CollectionStackPanel>
+
+      </StackPanel>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

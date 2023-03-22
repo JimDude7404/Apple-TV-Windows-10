@@ -1,0 +1,170 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="CarouselView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+
+    <DataTemplate x:Key="SpotlightLockupTemplate">
+      <Grid Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}">
+        <Grid.Resources>
+          <Views:ImageSize x:Key="ImgSize" Height="441" />
+          <Views:JsonImageSource x:Key="ImgSource"
+            Img="{Binding children.img}"
+            RequestSize="{StaticResource ImgSize}"
+            ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+            />
+          <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+        </Grid.Resources>
+
+        <ampc:AspectRatioGrid Name="spotlightLockup"
+          Views:JsonImage.FixDirection="True"
+          Views:JsonImage.LoadingCurtain="{StaticResource ImgBrush}"
+          AspectRatio="{Binding children.img.layout.aspectRatio, FallbackValue={StaticResource AspectRatio_363_100}}"
+          Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="{StaticResource GridItemCornerRadius}"
+          />
+      </Grid>
+    </DataTemplate>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <StackPanel Name="CollectionGroupsUIRoot"
+        MinWidth="{StaticResource MinContentAreaWidth}"
+        MaxWidth="{StaticResource MaxContentAreaWidth}"
+        HorizontalAlignment="Stretch"
+        Views:SizeChangedRelayer.Enabled="True"
+        >
+
+        <StackPanel.Resources>
+          <!--
+            -60 width adjustment to account for left and right buttons (40px x2) and the Padding around the
+            ListView (20px). This adjustment is to compute the viewport width that the lockup items need to
+            fit within, so relevant to item width computation.
+          -->
+          <Views:AdaptiveLayout x:Key="GridStyle"
+            CurrentWidth="{Binding (Views:SizeChangedRelayer.Width), ElementName=CollectionGroupsUIRoot}"
+            LayoutEnvironment="{StaticResource GridStyleEdgeToEdge}"
+            WidthAdjustment="-60"
+            />
+        </StackPanel.Resources>
+
+        <!-- vertical list of collection groups -->
+        <ItemsControl Name="CollectionGroupsList"
+          MinWidth="{StaticResource MinContentAreaWidth}"
+          MaxWidth="{StaticResource MaxContentAreaWidth}"
+          Margin="0 20 0 0"
+          HorizontalAlignment="Center"
+          ItemsSource="{Binding collectionGroups}"
+          >
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+
+              <!-- VisualStateManager.VisualStateGroups only works when placed on the root element of a ControlTemplate -->
+              <ContentControl Views:CommonPointerVisualStates.Enabled="True" IsTabStop="False">
+                <ContentControl.Template>
+                  <ControlTemplate>
+                    <Grid Name="CollectionGroupRoot" Background="Transparent">
+
+                      <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                          <VisualStateGroup.Transitions>
+                            <VisualTransition GeneratedDuration="0:0:0.3" />
+                          </VisualStateGroup.Transitions>
+                          <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                              <Setter Target="LeftButton.Opacity" Value="0" />
+                              <Setter Target="RightButton.Opacity" Value="0" />
+                            </VisualState.Setters>
+                          </VisualState>
+                          <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                              <Setter Target="LeftButton.Opacity" Value="1" />
+                              <Setter Target="RightButton.Opacity" Value="1" />
+                            </VisualState.Setters>
+                          </VisualState>
+                        </VisualStateGroup>
+                      </VisualStateManager.VisualStateGroups>
+
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                      </Grid.ColumnDefinitions>
+
+                      <!-- scroll left button -->
+                      <Button Name="LeftButton"
+                        Views:ScrollButton.Direction="Left"
+                        Views:ScrollButton.Scroller="{Binding ElementName=spotlight}"
+                        Style="{StaticResource LeftButtonStyle}"
+                        />
+
+                      <!-- horizontal list of spotlight lockups -->
+                      <Grid Grid.Column="1" Padding="-10 0">
+                        <ListView Name="spotlight"
+                          Grid.Column="1"
+                          Views:ItemsAutomationId.Enable="True"
+                          Views:ScrollRetainer.Retain="True"
+                          Views:ScrollViewer.HorizontalSnapPointsType="Mandatory"
+                          ItemTemplate="{StaticResource SpotlightLockupTemplate}"
+                          ItemsSource="{Binding children}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.HorizontalScrollMode="Auto"
+                          ScrollViewer.VerticalScrollMode="Disabled"
+                          SelectionMode="None"
+                          >
+                          <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                              <Setter Property="Padding" Value="10 0" />
+                              <Setter Property="IsTabStop" Value="False" />
+                            </Style>
+                          </ListView.ItemContainerStyle>
+                          <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                              <!--<Views:ItemPagePanel SpaceBetweenItems="20" />-->
+                              <ItemsWrapGrid
+                                Views:CommandEvents.ForwardPointerWheelChangedEvent="{Binding ElementName=CarouselView}"
+                                CacheLength="0"
+                                ItemWidth="{Binding ItemWidth, Source={StaticResource GridStyle}}"
+                                MaximumRowsOrColumns="1"
+                                Orientation="Vertical"
+                                />
+                            </ItemsPanelTemplate>
+                          </ListView.ItemsPanel>
+                        </ListView>
+                      </Grid>
+
+                      <!-- scroll right button -->
+                      <Button Name="RightButton"
+                        Grid.Column="2"
+                        Views:ScrollButton.Direction="Right"
+                        Views:ScrollButton.Scroller="{Binding ElementName=spotlight}"
+                        Style="{StaticResource RightButtonStyle}"
+                        />
+
+                    </Grid>
+                  </ControlTemplate>
+                </ContentControl.Template>
+              </ContentControl>
+
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+      </StackPanel>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

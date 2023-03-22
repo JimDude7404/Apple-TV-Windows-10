@@ -1,0 +1,770 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="BannerRoot"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  xmlns:ampv="using:AMP.UI.Views"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+    <ResourceDictionary>
+
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+          <!-- these colors are based on displaying over the background image and must not change based on OS light/dark theme setting -->
+          <SolidColorBrush x:Key="LightThemeListViewBackgroundColor" Color="#cccccc" />
+          <SolidColorBrush x:Key="DarkThemeListViewBackgroundColor" Color="#333333" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+          <SolidColorBrush x:Key="LightThemeListViewBackgroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+          <SolidColorBrush x:Key="DarkThemeListViewBackgroundColor" Color="{StaticResource SystemColorWindowTextColor}" />
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+
+      <ampc:KeyValueConverter x:Key="TextBackgroundSelector">
+        <ampc:KeyValuePair Key="light" Value="{StaticResource DarkThemeTextForegroundColor}" />
+        <ampc:KeyValuePair Key="dark" Value="{StaticResource LightThemeTextForegroundColor}" />
+      </ampc:KeyValueConverter>
+
+      <ampc:KeyValueConverter x:Key="AvailabilityListViewBackgroundSelector">
+        <ampc:KeyValuePair Key="light" Value="{StaticResource LightThemeListViewBackgroundColor}" />
+        <ampc:KeyValuePair Key="dark" Value="{StaticResource DarkThemeListViewBackgroundColor}" />
+      </ampc:KeyValueConverter>
+      <!--
+        capture the background image theme here so that it can be passed to verticalStack children as a
+        StaticResource since the children don't have access to json tree data members outside of their local scope
+      -->
+      <Views:StaticResourceValue x:Key="ThemeValue" Value="{Binding SupplementaryData.supplementaryCanonicalBackgroundImage.theme, ElementName=BannerRoot}" />
+      <Views:StaticResourceValue x:Key="TextForegroundValue" Value="{Binding Value, Source={StaticResource ThemeValue}, Converter={StaticResource TextForegroundSelector}}" />
+      <Views:StaticResourceValue x:Key="SecondaryTextForegroundValue" Value="{Binding Value, Source={StaticResource ThemeValue}, Converter={StaticResource SecondaryTextForegroundSelector}}" />
+      <Views:StaticResourceValue x:Key="TextBackgroundValue" Value="{Binding Value, Source={StaticResource ThemeValue}, Converter={StaticResource TextBackgroundSelector}}" />
+      <Views:StaticResourceValue x:Key="AvailabilityListViewBackgroundValue" Value="{Binding Value, Source={StaticResource ThemeValue}, Converter={StaticResource AvailabilityListViewBackgroundSelector}}" />
+
+      <Views:ThemeStringToThemeConverter x:Key="ThemeStringToTheme" />
+      <Views:StaticResourceValue x:Key="Theme" Value="{Binding Value, Source={StaticResource ThemeValue}, Converter={StaticResource ThemeStringToTheme}}" />
+      <Views:StaticResourceValue x:Key="InverseTheme" Value="{Binding Value, Source={StaticResource ThemeValue}, Converter={StaticResource ThemeStringToTheme}, ConverterParameter=Invert}" />
+
+      <Views:ColorZeroAlphaConverter x:Key="ZeroAlpha" />
+      <ampc:BooleanToInverseVisibilityConverter x:Key="GradientVisibility" />
+      <Views:AutomationIdConverter x:Key="AutomationIdConverter" />
+
+      <DataTemplate x:Key="PromotionalTextTemplate">
+        <Grid Name="PromotionalTextContainer">
+          <Grid Name="DropShadowHost" />
+          <TextBlock
+            Views:DropShadow.BlurRadius="5"
+            Views:DropShadow.Color="Black"
+            Views:DropShadow.HostElement="{Binding ElementName=DropShadowHost}"
+            Views:DropShadow.Opacity="50"
+            Style="{StaticResource Caption1EmphTextBlockStyle}"
+            Text="{Binding value}"
+            />
+        </Grid>
+      </DataTemplate>
+
+      <DataTemplate x:Key="SubtitleTextTemplate">
+        <TextBlock
+          Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+          Style="{StaticResource Title2EmphTextBlockStyle}"
+          Text="{Binding value}"
+          />
+      </DataTemplate>
+
+      <DataTemplate x:Key="IconButtonTemplate">
+        <Views:IconButton Name="IconButton" />
+      </DataTemplate>
+
+      <DataTemplate x:Key="SpinnerButtonTemplate">
+        <ProgressRing
+          MaxWidth="24"
+          MaxHeight="24"
+          IsActive="True"
+          IsIndeterminate="True"
+          />
+      </DataTemplate>
+
+      <ampc:KeyValueConverter x:Key="ButtonOrSpinnerTemplateSelector">
+        <ampc:KeyValuePair Key="True" Value="{StaticResource IconButtonTemplate}" />
+        <ampc:KeyValuePair Key="False" Value="{StaticResource SpinnerButtonTemplate}" />
+      </ampc:KeyValueConverter>
+
+      <Views:PriorityConverter x:Key="AvailabilityPriorityConverter">
+        <Views:PriorityConverter.Priorities>
+          <x:String>contentAvailability</x:String>
+          <x:String>buttons</x:String>
+        </Views:PriorityConverter.Priorities>
+      </Views:PriorityConverter>
+
+      <Views:ExpiryTimeToDisplayString x:Key="ExpiryTimeToDisplayString" />
+
+      <Views:ItemTypeTemplateSelector x:Key="AvailabilityTemplateSelector">
+        <Views:ItemTypeTemplate ItemType="contentAvailability">
+          <DataTemplate>
+            <StackPanel Name="Availability"
+              Padding="10"
+              Background="{Binding Value, Source={StaticResource AvailabilityListViewBackgroundValue}}"
+              CornerRadius="{StaticResource GridItemCornerRadius}"
+              DataContext="{Binding children}"
+              >
+              <TextBlock
+                HorizontalAlignment="Center"
+                Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+                Style="{StaticResource SubheadEmphTextBlockStyle}"
+                Text="{Binding text.value, Converter={StaticResource ToUpper}}"
+                />
+              <TextBlock
+                Margin="0 0 0 10"
+                HorizontalAlignment="Center"
+                Foreground="{Binding Value, Source={StaticResource TextForegroundValue}}"
+                Style="{StaticResource Title2EmphTextBlockStyle}"
+                Text="{Binding title.value}"
+                />
+              <Views:OptionalContentPresenter Content="{Binding upNextButton}">
+                <DataTemplate>
+                  <Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    AutomationProperties.AutomationId="upNextButton"
+                    Background="{Binding Value, Source={StaticResource TextForegroundValue}}"
+                    Command="{Binding routerDataSource.selectEventDataSource}"
+                    Content="{Binding}"
+                    ContentTemplate="{StaticResource IconButtonTemplate}"
+                    CornerRadius="6"
+                    />
+                </DataTemplate>
+              </Views:OptionalContentPresenter>
+            </StackPanel>
+          </DataTemplate>
+        </Views:ItemTypeTemplate>
+        <Views:ItemTypeTemplate ItemType="buttons">
+          <DataTemplate>
+            <Views:CollectionUniformGrid Name="Buttons" ItemsSource="{Binding children}">
+              <Views:CollectionUniformGrid.ItemTemplate>
+                <DataTemplate>
+                  <Button Name="ButtonOrSpinner"
+                    MaxHeight="48"
+                    Margin="0 4 0 0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Stretch"
+                    AutomationProperties.AutomationId="{Binding id, Converter={StaticResource AutomationIdConverter}}"
+                    Background="{Binding Value, Source={StaticResource TextForegroundValue}}"
+                    Command="{Binding routerDataSource.selectEventDataSource}"
+                    Content="{Binding}"
+                    ContentTemplate="{Binding ElementName=ButtonOrSpinner, Path=IsEnabled, Converter={StaticResource ButtonOrSpinnerTemplateSelector}}"
+                    CornerRadius="6"
+                    />
+                </DataTemplate>
+              </Views:CollectionUniformGrid.ItemTemplate>
+            </Views:CollectionUniformGrid>
+          </DataTemplate>
+        </Views:ItemTypeTemplate>
+      </Views:ItemTypeTemplateSelector>
+
+      <Views:TextNodeToMarkupConverter x:Key="TextNodeToMarkup" />
+      <Views:ArrayToStringConverter x:Key="MultiDescriptionToMarkupConverter"
+        ArrayOptional="True"
+        ChildPath="text"
+        ElementConverter="{StaticResource TextNodeToMarkup}"
+        Separator=""
+        />
+
+      <ControlTemplate x:Key="DescriptionTemplate">
+        <Grid>
+
+          <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CommonStates">
+              <VisualStateGroup.Transitions>
+                <VisualTransition GeneratedDuration="0:0:0.3" />
+              </VisualStateGroup.Transitions>
+              <VisualState x:Name="Normal" />
+              <VisualState x:Name="PointerOver">
+                <VisualState.Setters>
+                  <Setter Target="MoreButtonOverlay.Opacity" Value="1" />
+                </VisualState.Setters>
+              </VisualState>
+            </VisualStateGroup>
+          </VisualStateManager.VisualStateGroups>
+
+          <TextBlock Name="DescriptionText"
+            ampc:TextBlock.TaggedText="{Binding children.description.value, Converter={StaticResource MultiDescriptionToMarkupConverter}}"
+            MaxLines="4"
+            Style="{StaticResource Title3TextBlockStyle}"
+            TextTrimming="CharacterEllipsis"
+            TextWrapping="Wrap"
+            />
+
+          <Button Name="MoreButtonOverlay"
+            x:Uid="MoreButton"
+            Margin="0 0 -40 23"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            AutomationProperties.AccessibilityView="Raw"
+            BorderThickness="0"
+            Foreground="{StaticResource TextOverflowButtonForegroundColor}"
+            Opacity="0"
+            Visibility="{Binding IsTextTrimmed, ElementName=DescriptionText, Converter={StaticResource BoolToVisibility}}"
+            >
+            <Button.Flyout>
+              <Flyout>
+                <TextBlock
+                  MaxWidth="500"
+                  ampc:TextBlock.TaggedText="{Binding children.description.value, Converter={StaticResource MultiDescriptionToMarkupConverter}}"
+                  Style="{StaticResource Title3TallTextBlockStyle}"
+                  />
+              </Flyout>
+            </Button.Flyout>
+          </Button>
+
+        </Grid>
+      </ControlTemplate>
+
+      <DataTemplate x:Key="LogoTemplate">
+        <Grid>
+          <Grid.Resources>
+            <Views:ImageSize x:Key="LogoSize"
+              Height="30"
+              FallbackAspectRatio="{StaticResource AspectRatio_8_3}"
+              />
+            <Views:JsonImageSource x:Key="LogoSource"
+              Img="{Binding}"
+              RequestSize="{StaticResource LogoSize}"
+              ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+              />
+            <Views:JsonImageBrush x:Key="LogoBrush" JsonImageSource="{StaticResource LogoSource}" />
+          </Grid.Resources>
+          <ampc:AspectRatioGrid Name="logo"
+            Height="{Binding Height, Source={StaticResource LogoSource}}"
+            Views:JsonImage.FixDirection="True"
+            AspectRatio="{Binding AspectRatio, Source={StaticResource LogoSource}}"
+            Background="{Binding Brush, Source={StaticResource LogoBrush}}"
+            />
+        </Grid>
+      </DataTemplate>
+
+      <Views:ArrayToStringConverter x:Key="RolesArrayConverter" ChildPath="text.value" />
+      <Views:FirstOfTypeConverter x:Key="SelectTitleChild" ItemType="title" />
+
+      <DataTemplate x:Key="RolesItemTemplate">
+        <Grid>
+          <Grid.Resources>
+            <Views:StaticResourceValue x:Key="TitleContext" Value="{Binding children, Converter={StaticResource SelectTitleChild}}" />
+          </Grid.Resources>
+          <TextBlock Name="Label"
+            MaxLines="3"
+            Style="{StaticResource Title3TextBlockStyle}"
+            TextWrapping="WrapWholeWords"
+            >
+            <Run Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}" Text="{Binding Value.value, Source={StaticResource TitleContext}}" />
+            <Run />
+            <Run Foreground="{Binding Value, Source={StaticResource TextForegroundValue}}" Text="{Binding children, Converter={StaticResource RolesArrayConverter}}" />
+          </TextBlock>
+        </Grid>
+      </DataTemplate>
+
+      <Views:ItemTypeTemplateSelector x:Key="TitleTemplateSelector">
+        <Views:ItemTypeTemplate ItemType="title">
+          <DataTemplate>
+            <Viewbox>
+              <TextBlock
+                MaxLines="2"
+                Style="{StaticResource LargeTitleEmphTextBlockStyle}"
+                Text="{Binding value}"
+                TextWrapping="WrapWholeWords"
+                />
+            </Viewbox>
+          </DataTemplate>
+        </Views:ItemTypeTemplate>
+        <Views:ItemTypeTemplate ItemType="titleImage">
+          <DataTemplate>
+            <Grid>
+              <Grid.Resources>
+                <Views:ImageSize x:Key="TitleImgSize" Height="180" />
+                <Views:JsonImageSource x:Key="TitleImgSource"
+                  Img="{Binding}"
+                  RequestSize="{StaticResource TitleImgSize}"
+                  ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+                  />
+                <Views:JsonImageBrush x:Key="TitleImgBrush" JsonImageSource="{StaticResource TitleImgSource}" />
+              </Grid.Resources>
+              <!-- Size based on grid sizes -->
+              <ampc:AspectRatioGrid Name="titleImage"
+                Views:JsonImage.FixDirection="True"
+                AspectRatio="{Binding AspectRatio, Source={StaticResource TitleImgSource}}"
+                Background="{Binding Brush, Source={StaticResource TitleImgBrush}}"
+                />
+            </Grid>
+          </DataTemplate>
+        </Views:ItemTypeTemplate>
+      </Views:ItemTypeTemplateSelector>
+
+      <Views:PriorityConverter x:Key="TitlePriorityConverter">
+        <Views:PriorityConverter.Priorities>
+          <x:String>titleImage</x:String>
+          <x:String>title</x:String>
+        </Views:PriorityConverter.Priorities>
+      </Views:PriorityConverter>
+
+      <Views:NumberToDurationConverter x:Key="DurationConverter" />
+
+      <Views:JsonImageSource x:Key="BkgImageSource"
+        Img="{Binding SupplementaryData.supplementaryCanonicalBackgroundImage, ElementName=BannerRoot}"
+        RequestSize="{StaticResource BannerDefaultSize}"
+        ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+        />
+      <Views:JsonImageBrush x:Key="BkgImageBrush" JsonImageSource="{StaticResource BkgImageSource}" />
+
+      <ampc:KeyValueConverter x:Key="TomatometerImageConverter">
+        <ampc:KeyValuePair Key="CertifiedFresh" Value="ms-appx:///AMP.UI.Views/Assets/Tomato/RTLargeCertified.svg" />
+        <ampc:KeyValuePair Key="Fresh" Value="ms-appx:///AMP.UI.Views/Assets/Tomato/RTLargeFresh.svg" />
+        <ampc:KeyValuePair Key="Rotten" Value="ms-appx:///AMP.UI.Views/Assets/Tomato/RTLargeRotten.svg" />
+      </ampc:KeyValueConverter>
+
+      <Views:NumberToPercentConverter x:Key="NumberToPercent" />
+      <ampc:ResourceFormatterConverter x:Key="ResourceFormatter" />
+
+      <Views:BooleanStringToVisibilityConverter x:Key="BooleanStringToVisibilityConverter" />
+      <!--
+        Point 4k and uhd to the 4k image
+        No asset for SD
+      -->
+      <ampc:KeyValueConverter x:Key="ResolutionClassToImage">
+        <ampc:KeyValuePair Key="4K" Value="ms-appx:///AMP.UI.Views/Assets/Metadata/Metadata 4k.svg" />
+        <ampc:KeyValuePair Key="UHD" Value="ms-appx:///AMP.UI.Views/Assets/Metadata/Metadata 4k.svg" />
+        <ampc:KeyValuePair Key="HD" Value="ms-appx:///AMP.UI.Views/Assets/Metadata/Metadata HD.svg" />
+        <ampc:KeyValuePair Key="SD" Value="{x:Null}" />
+      </ampc:KeyValueConverter>
+
+      <!-- No asset for SDR -->
+      <ampc:KeyValueConverter x:Key="DynamicRangeToImage">
+        <ampc:KeyValuePair Key="DolbyVisionHDR" Value="ms-appx:///AMP.UI.Views/Assets/Metadata/DolbyVision - vertical.svg" />
+        <ampc:KeyValuePair Key="HDR" Value="ms-appx:///AMP.UI.Views/Assets/Metadata/Metadata HDR.svg" />
+        <ampc:KeyValuePair Key="HDR10Plus" Value="ms-appx:///AMP.UI.Views/Assets/Metadata/HDR10+.svg" />
+        <ampc:KeyValuePair Key="SDR" Value="{x:Null}" />
+      </ampc:KeyValueConverter>
+
+      <DataTemplate x:Key="CanonicalTitleTemplate">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+          </Grid.RowDefinitions>
+          <ContentControl Name="Title"
+            Grid.Row="0"
+            Content="{Binding children, Converter={StaticResource TitlePriorityConverter}}"
+            ContentTemplateSelector="{StaticResource TitleTemplateSelector}"
+            IsTabStop="False"
+            />
+          <Views:OptionalContentPresenter Name="PromotionalText"
+            Grid.Row="1"
+            Margin="0 20 0 0"
+            HorizontalAlignment="Center"
+            Content="{Binding children.promotionalText}"
+            OptionalTemplate="{StaticResource PromotionalTextTemplate}"
+            />
+        </Grid>
+      </DataTemplate>
+
+      <DataTemplate x:Key="EpisodeCanonicalTitleTemplate">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+          </Grid.RowDefinitions>
+          <Views:OptionalContentPresenter Name="Subtitle"
+            Grid.Row="0"
+            Margin="0 0 0 5"
+            Content="{Binding children.subtitle}"
+            OptionalTemplate="{StaticResource SubtitleTextTemplate}"
+            />
+
+          <TextBlock Name="Title"
+            Grid.Row="1"
+            Style="{StaticResource Title2EmphTextBlockStyle}"
+            Text="{Binding children.title.value}"
+            />
+        </Grid>
+      </DataTemplate>
+
+      <ampc:KeyValueConverter x:Key="TitleTemplateVersionSelector" DefaultValue="{StaticResource CanonicalTitleTemplate}">
+        <ampc:KeyValuePair Key="episode" Value="{StaticResource EpisodeCanonicalTitleTemplate}" />
+      </ampc:KeyValueConverter>
+
+      <Views:NoChildrenToNumberConverter x:Key="NoChildrenToNumberOrTwo" DefaultValue="2" />
+      <Views:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+
+      <ControlTemplate x:Key="TopContentRegion">
+        <!--
+          |       0                 1
+          0  Title(Image)    |    Logo      |
+          |__________________________________
+          1  PromotionalText |              |
+          |                  ________________
+          2          Empty Sizer Row        |  Used to keep Title to 1/4 or 1/5 banner size (depending on visual state)
+        -->
+        <Grid Name="CanonicalTopContent"
+          Margin="53"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Top"
+          Views:SizeChangedRelayer.Enabled="True"
+          >
+
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition x:Name="SizerColumn" Width="3*" />
+          </Grid.ColumnDefinitions>
+
+          <Grid.Resources>
+            <Views:GreaterThanToBoolConverter x:Key="GreaterThan" />
+          </Grid.Resources>
+
+          <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup Name="Sizes">
+
+              <!-- 1320 to 1680 -->
+              <VisualState Name="Large">
+                <VisualState.StateTriggers>
+                  <StateTrigger IsActive="{Binding (Views:SizeChangedRelayer.Width), ElementName=CanonicalTopContent, Converter={StaticResource GreaterThan}, ConverterParameter={StaticResource LargeViewportMin}}" />
+                </VisualState.StateTriggers>
+                <!-- use values coded in xaml -->
+              </VisualState>
+
+              <!-- 0 to 1319 -->
+              <VisualState>
+                <VisualState.StateTriggers>
+                  <!-- first state that is "True" will win, so this is like a "default" case -->
+                  <StateTrigger IsActive="True" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                  <Setter Target="SizerColumn.Width" Value="2*" />
+                </VisualState.Setters>
+              </VisualState>
+
+            </VisualStateGroup>
+          </VisualStateManager.VisualStateGroups>
+
+          <ContentControl Name="TitleContainer"
+            Grid.Column="0"
+            Content="{Binding}"
+            ContentTemplate="{Binding attributes.contentType, Converter={StaticResource TitleTemplateVersionSelector}}"
+            IsTabStop="False"
+            />
+
+          <Views:OptionalContentPresenter Name="Logo"
+            Grid.Row="0"
+            Grid.Column="1"
+            MaxHeight="30"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Content="{Binding children.logo}"
+            OptionalTemplate="{StaticResource LogoTemplate}"
+            />
+
+        </Grid>
+      </ControlTemplate>
+
+      <ControlTemplate x:Key="BottomContentRegion">
+        <!--
+          Gutter           Gutter
+          |       0           1        2       3   4
+          0  availabilityText  |              | |     |
+          |___________________________________________|
+          1  Buttons           | Description->| Roles |  Note if Roles isn't present, Description will stretch
+          |                    _______________________|
+          2                    | Metadata             |
+        -->
+        <Grid Name="ContainerGrid" Views:SizeChangedRelayer.Enabled="True">
+
+          <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <!-- Description.LineHeight * 4 from pt to px -->
+            <RowDefinition Height="107" />
+            <RowDefinition Height="auto" />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition x:Name="LeftGutter" Width="27" />
+            <ColumnDefinition x:Name="MiddleColumn" Width="3*" />
+            <ColumnDefinition x:Name="RightGutter" Width="27" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+
+          <Grid.Resources>
+            <Views:GreaterThanToBoolConverter x:Key="GreaterThan" />
+          </Grid.Resources>
+
+          <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup Name="Sizes">
+
+              <!-- 1000 to 1680 -->
+              <VisualState Name="Large">
+                <VisualState.StateTriggers>
+                  <StateTrigger IsActive="{Binding (Views:SizeChangedRelayer.Width), ElementName=ContainerGrid, Converter={StaticResource GreaterThan}, ConverterParameter={StaticResource LargeViewportMin}}" />
+                </VisualState.StateTriggers>
+                <!-- use values coded in xaml -->
+              </VisualState>
+
+              <!-- 740 to 999 -->
+              <VisualState Name="Medium">
+                <VisualState.StateTriggers>
+                  <StateTrigger IsActive="{Binding (Views:SizeChangedRelayer.Width), ElementName=ContainerGrid, Converter={StaticResource GreaterThan}, ConverterParameter={StaticResource MediumViewportMin}}" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                  <Setter Target="MiddleColumn.Width" Value="2*" />
+                </VisualState.Setters>
+              </VisualState>
+
+              <!-- 0 to 739 -->
+              <VisualState Name="Small">
+                <VisualState.StateTriggers>
+                  <!-- first state that is "True" will win, so this is like a "default" case -->
+                  <StateTrigger IsActive="True" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                  <Setter Target="MiddleColumn.Width" Value="*" />
+                </VisualState.Setters>
+              </VisualState>
+
+            </VisualStateGroup>
+          </VisualStateManager.VisualStateGroups>
+          <!-- Add negative margin to work nicely with ZeroAlpha for now -->
+          <Grid Name="Gradient"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Grid.ColumnSpan="5"
+            Margin="0 -200 0 0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Visibility="{Binding SupplementaryData.supplementaryCanonicalBackgroundImage.disableGradient, ElementName=BannerRoot, Converter={StaticResource GradientVisibility}}"
+            >
+            <Grid.Background>
+              <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
+                <GradientStop Offset="0" Color="{Binding Value.Color, Source={StaticResource AvailabilityListViewBackgroundValue}, Converter={StaticResource ZeroAlpha}}" />
+                <GradientStop Offset="1.0" Color="{Binding Value.Color, Source={StaticResource AvailabilityListViewBackgroundValue}}" />
+              </LinearGradientBrush>
+              <!--
+              <AcrylicBrush
+                FallbackColor="{Binding SupplementaryData.supplementaryCanonicalBackgroundImage.layout.backgroundColor, ElementName=BannerRoot}"
+                TintColor="{Binding SupplementaryData.supplementaryCanonicalBackgroundImage.layout.backgroundColor, ElementName=BannerRoot}"
+                TintLuminosityOpacity="0.15"
+                TintOpacity="0.05"
+                />-->
+            </Grid.Background>
+          </Grid>
+          <TextBlock Name="RentalExpiryText"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="53 0 0 5"
+            Foreground="#DA525E"
+            Text="{Binding supplementaryData.contentMetadata.rentalExpiration, Converter={StaticResource ExpiryTimeToDisplayString}, ConverterParameter=TimeSince1970}"
+            TextAlignment="Center"
+            TextTrimming="CharacterEllipsis"
+            Visibility="{Binding supplementaryData.contentMetadata.rentalExpiration, Converter={StaticResource NullToVisibilityConverter}}"
+            />
+          <TextBlock Name="AvailabilityText"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="53 0 0 5"
+            Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+            Text="{Binding children.availabilityText.value}"
+            TextAlignment="Center"
+            TextTrimming="CharacterEllipsis"
+            Visibility="{Binding supplementaryData.contentMetadata.rentalExpiration, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"
+            />
+          <!-- Set requested theme to InverseTheme since we want buttons to be same color as text -->
+          <ContentControl Name="ButtonsOrAvailability"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="53 0 0 53"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            Content="{Binding children, Converter={StaticResource AvailabilityPriorityConverter}}"
+            ContentTemplateSelector="{StaticResource AvailabilityTemplateSelector}"
+            RequestedTheme="{Binding Value, Source={StaticResource InverseTheme}}"
+            />
+          <!-- 20 pt spacing on either side of description -->
+          <ContentControl Name="Description"
+            Grid.Row="1"
+            Grid.Column="2"
+            Grid.ColumnSpan="{Binding children.rolesSummary.children, Converter={StaticResource NoChildrenToNumberOrTwo}, ConverterParameter=3}"
+            Margin="27 0"
+            Views:CommonPointerVisualStates.Enabled="True"
+            Content="{Binding}"
+            IsTabStop="False"
+            Template="{StaticResource DescriptionTemplate}"
+            />
+          <Views:CollectionStackPanel Name="Roles"
+            Grid.Row="1"
+            Grid.Column="4"
+            Grid.ColumnSpan="1"
+            Margin="0 0 53 0"
+            ItemTemplate="{StaticResource RolesItemTemplate}"
+            ItemsSource="{Binding children.rolesSummary.children}"
+            />
+          <StackPanel Name="ContentMetadata"
+            Grid.Row="2"
+            Grid.Column="2"
+            Grid.ColumnSpan="3"
+            Margin="27 0 53 53"
+            DataContext="{Binding supplementaryData.contentMetadata}"
+            Orientation="Horizontal"
+            >
+            <StackPanel.Resources>
+              <Views:RatingToEntryConverter x:Key="RatingConverter" RatingDictionary="{StaticResource Ratings}" />
+              <Views:StaticResourceValue x:Key="RatingEntry" Value="{Binding Converter={StaticResource RatingConverter}}" />
+            </StackPanel.Resources>
+            <TextBlock Name="Genre, Release Data, and Duration"
+              Margin="0 0 3 0"
+              VerticalAlignment="Center"
+              Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Style="{StaticResource CalloutEmphTextBlockStyle}"
+              >
+              <Run Text="{Binding genreName}" />
+              <Run />
+              <Run Text="{Binding formattedReleaseDate}" />
+              <Run />
+              <Run Text="{Binding duration, Converter={StaticResource DurationConverter}}" />
+              <Run />
+            </TextBlock>
+            <Image Name="Tomato Icon"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="{Binding tomatometerFreshness, Converter={StaticResource TomatometerImageConverter}}"
+              Visibility="{Binding tomatometerFreshness, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <TextBlock Name="Tomatometer Percent"
+              Margin="3 0"
+              VerticalAlignment="Center"
+              Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Style="{StaticResource CalloutEmphTextBlockStyle}"
+              Text="{Binding tomatometerPercentage, Converter={StaticResource NumberToPercent}}"
+              Visibility="{Binding tomatometerPercentage, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <Image Name="Common Sense"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="ms-appx:///AMP.UI.Views/Assets/Metadata/Metadata-CommonSense@3x.png"
+              Visibility="{Binding recommendedAge, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <TextBlock Name="Age"
+              Margin="3 0"
+              VerticalAlignment="Center"
+              Foreground="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Style="{StaticResource CalloutEmphTextBlockStyle}"
+              Text="{Binding recommendedAge, Converter={StaticResource ResourceFormatter}, ConverterParameter=TV^CommonSense^AgeRating}"
+              Visibility="{Binding recommendedAge, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <!-- All rating images are not single colored. Tinting won't work then so need alternative solution -->
+            <Views:SvgTintableImage Name="Rating"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              IsTintable="{Binding Value.IsTintable, Source={StaticResource RatingEntry}}"
+              Source="{Binding Value.ImageUri, Source={StaticResource RatingEntry}}"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding ratingName, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <Views:SvgTintableImage Name="Resolution"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="{Binding videoResolutionClass, Converter={StaticResource ResolutionClassToImage}}"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding Source, RelativeSource={RelativeSource Self}, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <Views:SvgTintableImage Name="Dynamic Range"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="{Binding videoDynamicRange, Converter={StaticResource DynamicRangeToImage}}"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding Source, RelativeSource={RelativeSource Self}, Converter={StaticResource NotNullToVisibility}}"
+              />
+            <Views:SvgTintableImage Name="Dolby Atmos"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="ms-appx:///AMP.UI.Views/Assets/Metadata/DolbyAtmos  - vertical.svg"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding hasDolbyAtmos, Converter={StaticResource BooleanStringToVisibilityConverter}}"
+              />
+            <Views:SvgTintableImage Name="CC"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="ms-appx:///AMP.UI.Views/Assets/Metadata/Metadata CC.svg"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding hasClosedCaption, Converter={StaticResource BooleanStringToVisibilityConverter}}"
+              />
+            <Views:SvgTintableImage Name="SDH"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="ms-appx:///AMP.UI.Views/Assets/Metadata/SDH.svg"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding hasSDH, Converter={StaticResource BooleanStringToVisibilityConverter}}"
+              />
+            <Views:SvgTintableImage Name="AD"
+              Height="12"
+              Margin="3 0"
+              VerticalAlignment="Bottom"
+              Source="ms-appx:///AMP.UI.Views/Assets/Metadata/AD.svg"
+              TintColor="{Binding Value, Source={StaticResource SecondaryTextForegroundValue}}"
+              Visibility="{Binding hasAD, Converter={StaticResource BooleanStringToVisibilityConverter}}"
+              />
+          </StackPanel>
+        </Grid>
+      </ControlTemplate>
+
+    </ResourceDictionary>
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <ampc:AspectRatioGrid Name="canonicalBanner"
+        MaxWidth="{StaticResource MaxContentAreaWidth}"
+        Margin="-10 0"
+        Views:JsonImage.LoadingCurtain="{StaticResource BkgImageSource}"
+        AspectRatio="{Binding AspectRatio, Source={StaticResource BkgImageSource}}"
+        BorderBrush="{StaticResource LockupBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="0 0 6 6"
+        RequestedTheme="{Binding Value, Source={StaticResource Theme}}"
+        >
+        <Image 
+          Source="{Binding ImageSource, Source={StaticResource BkgImageSource}}" 
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Stretch="UniformToFill"
+          />
+        <Control Name="CanonicalTopContent"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Top"
+          IsTabStop="False"
+          Template="{StaticResource TopContentRegion}"
+          />
+        <Control Name="CanonicalBottomContent"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Bottom"
+          IsTabStop="False"
+          Template="{StaticResource BottomContentRegion}"
+          />
+      </ampc:AspectRatioGrid>
+
+    </ControlTemplate>
+  </Control.Template>
+</Control>

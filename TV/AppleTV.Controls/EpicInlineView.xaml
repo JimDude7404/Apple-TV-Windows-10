@@ -1,0 +1,291 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+  
+  Design Reference :
+  https://pd-hi.apple.com/viewvc/Common/Modules/macOS/TV%20App/Lockups/Epic%20Inline.png
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  >
+
+  <Style TargetType="Views:EpicInlineView">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate>
+
+          <StackPanel>
+
+            <StackPanel.Resources>
+              <ResourceDictionary>
+
+                <ResourceDictionary.ThemeDictionaries>
+                  <ResourceDictionary x:Key="Default">
+                    <Color x:Key="ChannelLogoTintColor">Black</Color>
+                  </ResourceDictionary>
+                  <ResourceDictionary x:Key="Dark">
+                    <Color x:Key="ChannelLogoTintColor">White</Color>
+                  </ResourceDictionary>
+                  <!-- doesn't change colors when in HighContrast -->
+                </ResourceDictionary.ThemeDictionaries>
+
+                <!-- background img -->
+                <Views:FirstOfTypeConverter x:Name="SelectImgChild" ItemType="img" />
+                <Views:StaticResourceValue x:Key="BackgroundImg" Value="{Binding children.background.children, Converter={StaticResource SelectImgChild}}" />
+
+                <!-- flavor D alphaImg -->
+                <Views:FirstOfTypeConverter x:Name="SelectAlphaImgChild" ItemType="alphaImg" />
+                <Views:StaticResourceValue x:Key="AlphaImg" Value="{Binding children.background.children, Converter={StaticResource SelectAlphaImgChild}}" />
+
+                <Views:JsonImageToImageSourceConverter x:Key="BkgSource" Width="{StaticResource MaxContentAreaWidth}" />
+                <Views:JsonImageToImageSourceConverter x:Key="ImgSource" Width="216" />
+                <Views:JsonImageToImageSourceConverter x:Key="LogoSource" Width="130" />
+                <Views:JsonImageToImageSourceConverter x:Key="ChannelLogoSource" Height="23" />
+
+              </ResourceDictionary>
+            </StackPanel.Resources>
+
+            <Views:OptionalContentPresenter Content="{Binding children.collectionHeader}">
+              <DataTemplate>
+                <Views:CollectionStackPanel Margin="40 0 40 10" ItemsSource="{Binding children}">
+                  <Views:ItemTypeTemplateSelector>
+
+                    <Views:ItemTypeTemplate ItemType="title">
+                      <DataTemplate>
+                        <TextBlock
+                          Margin="0 10 0 0"
+                          Style="{StaticResource Title2EmphTextBlockStyle}"
+                          Text="{Binding value}"
+                          />
+                      </DataTemplate>
+                    </Views:ItemTypeTemplate>
+
+                    <Views:ItemTypeTemplate ItemType="subtitle">
+                      <DataTemplate>
+                        <TextBlock
+                          Margin="0 4 0 0"
+                          Foreground="{ThemeResource SecondaryTextForegroundColor}"
+                          Style="{StaticResource BodyTextBlockStyle}"
+                          Text="{Binding value}"
+                          />
+                      </DataTemplate>
+                    </Views:ItemTypeTemplate>
+
+                  </Views:ItemTypeTemplateSelector>
+                </Views:CollectionStackPanel>
+              </DataTemplate>
+            </Views:OptionalContentPresenter>
+
+            <ampc:AspectRatioGrid
+              MaxWidth="{StaticResource MaxContentAreaWidth}"
+              HorizontalAlignment="Stretch"
+              AspectRatio="{StaticResource AspectRatio_8_3}"
+              >
+
+              <!-- placehold color shows while background image is loading -->
+              <ampc:AspectRatioGrid.Background>
+                <SolidColorBrush Color="{Binding Value.layout.backgroundColor, Source={StaticResource BackgroundImg}}" />
+              </ampc:AspectRatioGrid.Background>
+
+              <ampc:AspectRatioGrid.RowDefinitions>
+                <!-- vertical stack -->
+                <RowDefinition />
+                <!-- orthogonal collection -->
+                <RowDefinition Height="Auto" />
+              </ampc:AspectRatioGrid.RowDefinitions>
+
+              <Image Name="Background"
+                Grid.RowSpan="2"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="{Binding Value, Source={StaticResource BackgroundImg}, Converter={StaticResource BkgSource}}"
+                Stretch="UniformToFill"
+                />
+
+              <!-- gradient for flavors A, B, C, and E -->
+              <Image Name="Background Gradient"
+                Grid.RowSpan="2"
+                Opacity="0.8"
+                Source="ms-appx:///AMP.UI.Views/Assets/EpicInline/BackgroundRadialGradientMask.svg"
+                Stretch="UniformToFill"
+                Visibility="{Binding Value, Source={StaticResource AlphaImg}, Converter={StaticResource NullToCollapsed}, ConverterParameter=Invert}"
+                />
+
+              <!-- gradient for flavor D -->
+              <Grid Name="Background Gradient D"
+                Grid.RowSpan="2"
+                Visibility="{Binding Value, Source={StaticResource AlphaImg}, Converter={StaticResource NullToCollapsed}}"
+                >
+                <Grid.Background>
+                  <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Offset="0" Color="#00000000" />
+                    <!-- 16% opacity -->
+                    <GradientStop Offset="0.5" Color="#28000000" />
+                    <!-- 60% opacity -->
+                    <GradientStop Offset="1" Color="#99000000" />
+                  </LinearGradientBrush>
+                </Grid.Background>
+
+                <Image Name="alphaImg"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Source="{Binding Value, Source={StaticResource AlphaImg}, Converter={StaticResource BkgSource}}"
+                  />
+              </Grid>
+
+              <Image Name="Logo"
+                Width="130"
+                MaxHeight="24"
+                Margin="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Source="{Binding children.logo, Converter={StaticResource LogoSource}}"
+                />
+
+              <Views:CollectionStackPanel Name="verticalStack"
+                MaxWidth="360"
+                Margin="{StaticResource ShelfRowSideMargin}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                ItemsSource="{Binding children.verticalStack.children}"
+                RequestedTheme="{Binding Value.theme, Source={StaticResource BackgroundImg}, Converter={StaticResource ImgThemeToElementTheme}}"
+                >
+                <Views:ItemTypeTemplateSelector>
+
+                  <Views:ItemTypeTemplate ItemType="img">
+                    <DataTemplate>
+                      <Image Name="img"
+                        MaxWidth="216"
+                        MaxHeight="81"
+                        Margin="0 0 0 12"
+                        HorizontalAlignment="Left"
+                        Source="{Binding Converter={StaticResource ImgSource}}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="channelLogo">
+                    <DataTemplate>
+                      <Views:SvgTintableImage Name="channelLogo"
+                        MaxHeight="23"
+                        Margin="0 0 0 10"
+                        HorizontalAlignment="Left"
+                        Source="{Binding children.img, Converter={StaticResource ChannelLogoSource}}"
+                        TintColor="{ThemeResource ChannelLogoTintColor}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="caption">
+                    <DataTemplate>
+                      <TextBlock Name="caption"
+                        Opacity="{ThemeResource SecondaryTextOpacity}"
+                        Style="{StaticResource CalloutEmphTextBlockStyle}"
+                        Text="{Binding value, Converter={StaticResource ToUpper}}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="title">
+                    <DataTemplate>
+                      <TextBlock Name="title"
+                        Margin="0 0 0 4"
+                        Opacity="{ThemeResource PrimaryTextOpacity}"
+                        Style="{StaticResource LargeTitleEmphTextBlockStyle}"
+                        Text="{Binding value}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="subtitle">
+                    <DataTemplate>
+                      <TextBlock Name="subtitle"
+                        Margin="0 0 0 6"
+                        Opacity="{ThemeResource SecondaryTextOpacity}"
+                        Style="{StaticResource Title2TextBlockStyle}"
+                        Text="{Binding value}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="bodyText">
+                    <DataTemplate>
+                      <TextBlock Name="bodyText"
+                        Margin="0 0 0 4"
+                        Opacity="{ThemeResource PrimaryTextOpacity}"
+                        Style="{StaticResource Title2EmphTextBlockStyle}"
+                        Text="{Binding value}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="button">
+                    <DataTemplate>
+                      <Grid>
+                        <Grid.Resources>
+
+                          <DataTemplate x:Key="IconButtonTemplate">
+                            <Views:IconButton />
+                          </DataTemplate>
+
+                          <DataTemplate x:Key="SpinnerButtonTemplate">
+                            <ProgressRing IsActive="True" IsIndeterminate="True" />
+                          </DataTemplate>
+
+                          <ampc:KeyValueConverter x:Key="ButtonOrSpinnerTemplateSelector">
+                            <ampc:KeyValuePair Key="True" Value="{StaticResource IconButtonTemplate}" />
+                            <ampc:KeyValuePair Key="False" Value="{StaticResource SpinnerButtonTemplate}" />
+                          </ampc:KeyValueConverter>
+
+                          <ampc:KeyValueConverter x:Key="ImgThemeToInverseElementTheme" DefaultValue="{StaticResource DarkElementTheme}">
+                            <ampc:KeyValuePair Key="dark" Value="{StaticResource LightElementTheme}" />
+                          </ampc:KeyValueConverter>
+                          <Views:StaticResourceValue x:Key="InverseTheme" Value="{Binding Value.theme, Source={StaticResource BackgroundImg}, Converter={StaticResource ImgThemeToInverseElementTheme}}" />
+
+                        </Grid.Resources>
+
+                        <Button Name="ButtonOrSpinner"
+                          Margin="0 4"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Center"
+                          Command="{Binding routerDataSource.selectEventDataSource}"
+                          Content="{Binding children.value}"
+                          ContentTemplate="{Binding IsEnabled, RelativeSource={RelativeSource Self}, Converter={StaticResource ButtonOrSpinnerTemplateSelector}, ConverterParameter=Boolean}"
+                          CornerRadius="6"
+                          RequestedTheme="{Binding Value, Source={StaticResource InverseTheme}}"
+                          />
+                      </Grid>
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                  <Views:ItemTypeTemplate ItemType="subBody">
+                    <DataTemplate>
+                      <TextBlock Name="subBody"
+                        HorizontalTextAlignment="Center"
+                        Opacity="{ThemeResource SecondaryTextOpacity}"
+                        Style="{StaticResource SubheadTextBlockStyle}"
+                        Text="{Binding value}"
+                        />
+                    </DataTemplate>
+                  </Views:ItemTypeTemplate>
+
+                </Views:ItemTypeTemplateSelector>
+              </Views:CollectionStackPanel>
+
+              <Views:OrthogonalCollectionView Name="orthogonalCollection"
+                Grid.Row="1"
+                DataContext="{Binding children.orthogonalCollection}"
+                ImgTheme="{Binding Value.theme, Source={StaticResource BackgroundImg}}"
+                />
+
+            </ampc:AspectRatioGrid>
+          </StackPanel>
+
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

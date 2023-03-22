@@ -1,0 +1,123 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}"
+  >
+
+  <Control.Resources>
+
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding children.img}"
+      RequestSize="{StaticResource LockupDefaultSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <!--
+           1          2
+        1        Image      |
+        |__________|________|
+        2  Number  |  Body  |
+        |__________|________|
+        -->
+      <Grid Name="OrdinalLockup">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="auto"/>
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <ampc:AspectRatioGrid
+          Name="Image"
+          Grid.Row="0"
+          Grid.Column="0"
+          Grid.ColumnSpan="2"
+          Margin="0 0 0 6"
+          AspectRatio="{Binding AspectRatio, Source={StaticResource ImgSource}}"
+          BorderBrush="{StaticResource LockupBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="{StaticResource GridItemCornerRadius}"
+          >
+
+            <ampc:AspectRatioGrid.Background>
+              <SolidColorBrush Color="{Binding children.img.layout.backgroundColor}" />
+            </ampc:AspectRatioGrid.Background>
+
+            <Image Source="{Binding ImageSource, Source={StaticResource ImgSource}}" Stretch="UniformToFill"/>
+          </ampc:AspectRatioGrid>
+
+        <TextBlock
+          Name="OridinalText"
+          Grid.Row="1"
+          Grid.Column="0"
+          HorizontalAlignment="Center"
+          Foreground="{ThemeResource SecondaryTextForegroundColor}"
+          MaxLines="1"
+          Style="{StaticResource HeaderEmphTextBlockStyle}"
+          Text="{Binding children.text.value}"
+          />
+
+        <StackPanel
+          Name="Body"
+          Grid.Row="1"
+          Grid.Column="1"
+          Margin="16 0 0 0"
+          >
+
+          <ItemsControl ItemsSource="{Binding children}">
+            <ItemsControl.ItemTemplateSelector>
+              <Views:ItemTypeTemplateSelector>
+
+                <Views:ItemTypeTemplateSelector.DefaultTemplate>
+                  <DataTemplate />
+                </Views:ItemTypeTemplateSelector.DefaultTemplate>
+
+                <Views:ItemTypeTemplate ItemType="title">
+                  <DataTemplate>
+                    <TextBlock
+                      MaxLines="2"
+                      Style="{StaticResource Title3ShortTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="subtitle">
+                  <DataTemplate>
+                    <TextBlock
+                      Margin="0 2 0 0"
+                      MaxLines="1"
+                      Style="{StaticResource CalloutTextBlockStyle}"
+                      Foreground="{ThemeResource SecondaryTextForegroundColor}"
+                      Text="{Binding value}"
+                      TextTrimming="CharacterEllipsis"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+              </Views:ItemTypeTemplateSelector>
+            </ItemsControl.ItemTemplateSelector>
+          </ItemsControl>
+        </StackPanel>
+
+        <!-- Lockup Overlay -->
+
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

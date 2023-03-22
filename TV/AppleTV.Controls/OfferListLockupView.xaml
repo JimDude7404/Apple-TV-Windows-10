@@ -1,0 +1,185 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:CommandEvents.TappedCommand="{Binding routerDataSource.selectEventDataSource}"
+  IsTabStop="True"
+  >
+
+  <Control.Resources>
+    <Views:ImageSize x:Key="ImgSize" Height="80" />
+    <!-- Image must respect 16/9 aspect ratio due to crop codes -->
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding children.img}"
+      RequestSize="{StaticResource ImgSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+
+    <Views:FirstOfTypeConverter x:Key="SelectTitleChild" ItemType="title" />
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <Grid Margin="10 0">
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!-- image on left -->
+        <ampc:AspectRatioGrid
+          Name="offerListLockup"
+          Grid.Row="0"
+          Grid.Column="0"
+          Height="62"
+          Views:JsonImage.LoadingCurtain="{StaticResource ImgBrush}"
+          AspectRatio="{Binding children.img.layout.aspectRatio}"
+          Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+          CornerRadius="10"
+          />
+
+        <!-- texts in middle -->
+        <StackPanel
+          Grid.Row="0"
+          Grid.Column="1"
+          Margin="15 0"
+          VerticalAlignment="Center"
+          DataContext="{Binding children}"
+          >
+
+          <!-- title -->
+          <TextBlock Style="{StaticResource CalloutEmphTextBlockStyle}" Text="{Binding title.value}" />
+
+          <!-- description -->
+          <Views:OptionalContentPresenter Content="{Binding description}">
+            <DataTemplate>
+
+              <!--
+                this contentcontrol nonsense is to get the VisualStates to work which only
+                works if it's a child of the first panel inside of a control template
+              -->
+              <ContentControl
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Views:CommonPointerVisualStates.Enabled="True"
+                IsTabStop="False"
+                >
+                <ContentControl.Template>
+                  <ControlTemplate TargetType="ContentControl">
+                    <Grid>
+
+                      <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup x:Name="CommonStates">
+                          <VisualStateGroup.Transitions>
+                            <VisualTransition GeneratedDuration="0:0:0.3" />
+                          </VisualStateGroup.Transitions>
+                          <VisualState x:Name="Normal" />
+                          <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                              <Setter Target="MoreButtonOverlay.Opacity" Value="1" />
+                            </VisualState.Setters>
+                          </VisualState>
+                        </VisualStateGroup>
+                      </VisualStateManager.VisualStateGroups>
+
+                      <TextBlock
+                        Name="description"
+                        Margin="0 5 0 0"
+                        Foreground="{StaticResource SecondaryTextForegroundColor}"
+                        MaxLines="2"
+                        Style="{StaticResource FootnoteTextBlockStyle}"
+                        Text="{Binding value}"
+                        TextWrapping="WrapWholeWords"
+                        />
+
+                      <Button
+                        Name="MoreButtonOverlay"
+                        x:Uid="MoreButton"
+                        Margin="0 0 -10 -7"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        AutomationProperties.AccessibilityView="Raw"
+                        BorderThickness="0"
+                        Foreground="{StaticResource TextOverflowButtonForegroundColor}"
+                        Opacity="0"
+                        Visibility="{Binding IsTextTrimmed, ElementName=description, Converter={StaticResource BoolToVisibility}}"
+                        >
+                        <Button.Flyout>
+                          <Flyout>
+                            <TextBlock
+                              MaxWidth="500"
+                              Style="{StaticResource Title3TallTextBlockStyle}"
+                              Text="{Binding value}"
+                              />
+                          </Flyout>
+                        </Button.Flyout>
+                      </Button>
+
+                    </Grid>
+                  </ControlTemplate>
+                </ContentControl.Template>
+              </ContentControl>
+
+            </DataTemplate>
+          </Views:OptionalContentPresenter>
+
+          <!-- don't know what this is. a clickable version hyperlink? -->
+          <Views:OptionalContentPresenter
+            Name="Version"
+            HorizontalContentAlignment="Left"
+            Content="{Binding textualButton}"
+            OptionalTemplate="{StaticResource VersionTemplate}"
+            />
+
+        </StackPanel>
+
+        <!-- buy button on right -->
+        <Views:OptionalContentPresenter
+          Grid.Row="0"
+          Grid.Column="2"
+          Content="{Binding children.button}"
+          >
+          <DataTemplate>
+            <Button
+              AutomationProperties.Name="{Binding attributes.accessibilityText}"
+              Command="{Binding routerDataSource.selectEventDataSource}"
+              CornerRadius="15"
+              Style="{StaticResource TVAccentButtonStyle}"
+              >
+              <TextBlock
+                Padding="5 0"
+                DataContext="{Binding children, Converter={StaticResource SelectTitleChild}}"
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="{Binding value}"
+                />
+            </Button>
+          </DataTemplate>
+        </Views:OptionalContentPresenter>
+
+        <!-- divider line at bottom -->
+        <Border
+          Grid.Row="1"
+          Grid.Column="1"
+          Grid.ColumnSpan="2"
+          Margin="15 5"
+          Style="{StaticResource HorizontalDividerStyle}"
+          />
+
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

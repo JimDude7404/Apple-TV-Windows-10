@@ -1,0 +1,61 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Name="ButtonRoot"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+    <Views:ItemTypeTemplateSelector x:Key="IconButtonSelector">
+      <Views:ItemTypeTemplate ItemType="progress">
+        <DataTemplate>
+          <ProgressRing
+            Width="26"
+            Height="26"
+            IsActive="True"
+            IsIndeterminate="True"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+      <Views:ItemTypeTemplate ItemType="title">
+        <DataTemplate>
+          <TextBlock
+            Margin="0 0 0 2"
+            Style="{StaticResource BodyEmphTextBlockStyle}"
+            ampc:TextBlock.TaggedText="{Binding value}"
+            TextAlignment="Center"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+      <Views:ItemTypeTemplate ItemType="img">
+        <DataTemplate>
+          <FontIcon
+            Margin="0 0 5 0"
+            FontSize="16"
+            Glyph="{Binding src, Converter={StaticResource SFSymbolToUnicodeConverter}}"
+            Style="{StaticResource ChromeSymbolSmallFontIconStyle}"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+    </Views:ItemTypeTemplateSelector>
+
+    <Views:IconButtonConverter x:Key="IconButtonConverter" />
+
+  </Control.Resources>
+  <Control.Template>
+    <ControlTemplate>
+      <Views:CollectionStackPanel
+        VerticalAlignment="Center"
+        IsHitTestVisible="False"
+        ItemTemplate="{StaticResource IconButtonSelector}"
+        ItemsSource="{Binding children, Converter={StaticResource IconButtonConverter}}"
+        Orientation="Horizontal"
+        />
+    </ControlTemplate>
+  </Control.Template>
+</Control>

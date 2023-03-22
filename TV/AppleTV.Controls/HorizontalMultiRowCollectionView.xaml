@@ -1,0 +1,204 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="HorizontalMultiRowCollectionView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  AutomationProperties.Name="{Binding attributes.accessibilityText}"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+    <Views:ItemTypeTemplateSelector x:Key="LockupTemplateSelector">
+
+      <Views:ItemTypeTemplate ItemType="ordinalLockup">
+        <DataTemplate>
+          <Views:OrdinalLockupView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+    </Views:ItemTypeTemplateSelector>
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <!-- outer grid stretches the width of the content area even if it's wider than the max content area width -->
+      <Grid HorizontalAlignment="Stretch" Background="{TemplateBinding Background}">
+        <!-- inner grid constrains content to be no wider than max content area width -->
+        <Grid Name="CollectionGroupsUIRoot"
+          MinWidth="{StaticResource MinContentAreaWidth}"
+          MaxWidth="{StaticResource MaxContentAreaWidth}"
+          Views:SizeChangedRelayer.Enabled="True"
+          >
+
+          <Grid.Resources>
+            <!--
+              -60 width adjustment to account for left and right buttons (40px x2) and the Padding around the
+              ListView (20px). This adjustment is to compute the viewport width that the lockup items need to
+              fit within, so relevant to item width computation.
+            -->
+            <Views:AdaptiveLayout x:Key="GridStyle"
+              CurrentWidth="{Binding (Views:SizeChangedRelayer.Width), ElementName=CollectionGroupsUIRoot}"
+              LayoutEnvironment="{Binding layout.gridStyle, Converter={StaticResource GridStyleConverter}}"
+              WidthAdjustment="-60"
+              />
+          </Grid.Resources>
+
+          <!-- prototype is rendered behind the "shelf" so that it doesn't make the shelf taller by its existence -->
+          <Views:PrototypeMeasurer Name="Prototype" AdaptiveLayout="{StaticResource GridStyle}">
+            <!-- Padding matches the ItemContainerStyle below to correct size calculations -->
+            <ContentControl
+              Padding="10 0"
+              HorizontalContentAlignment="Stretch"
+              Content="{Binding prototype.children[0]}"
+              ContentTemplateSelector="{StaticResource LockupTemplateSelector}"
+              IsTabStop="False"
+              />
+          </Views:PrototypeMeasurer>
+
+          <StackPanel>
+
+            <!-- header -->
+            <Views:CollectionStackPanel Margin="40 0" ItemsSource="{Binding header.collectionHeader.children}">
+              <Views:ItemTypeTemplateSelector>
+
+                <Views:ItemTypeTemplate ItemType="title">
+                  <DataTemplate>
+                    <TextBlock
+                      Margin="0 10 0 0"
+                      Style="{StaticResource Title2EmphTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+                <Views:ItemTypeTemplate ItemType="subtitle">
+                  <DataTemplate>
+                    <TextBlock
+                      Margin="0 4 0 0"
+                      Foreground="{ThemeResource SecondaryTextForegroundColor}"
+                      Style="{StaticResource BodyTextBlockStyle}"
+                      Text="{Binding value}"
+                      />
+                  </DataTemplate>
+                </Views:ItemTypeTemplate>
+
+              </Views:ItemTypeTemplateSelector>
+            </Views:CollectionStackPanel>
+
+            <!-- vertical list of collection groups -->
+            <ItemsControl Name="CollectionGroupsList"
+              Margin="0 10 0 0"
+              ItemsSource="{Binding collectionGroups}"
+              >
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+
+                  <!-- VisualStateManager.VisualStateGroups only works when placed on the root element of a ControlTemplate -->
+                  <ContentControl Views:CommonPointerVisualStates.Enabled="True" IsTabStop="False">
+                    <ContentControl.Template>
+                      <ControlTemplate>
+                        <!-- transparent background rather than null so that it is a mouse-over hit target -->
+                        <Grid Background="Transparent">
+
+                          <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                              <VisualStateGroup.Transitions>
+                                <VisualTransition GeneratedDuration="0:0:0.3" />
+                              </VisualStateGroup.Transitions>
+                              <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                  <Setter Target="LeftButton.Opacity" Value="0" />
+                                  <Setter Target="RightButton.Opacity" Value="0" />
+                                </VisualState.Setters>
+                              </VisualState>
+                              <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                  <Setter Target="LeftButton.Opacity" Value="1" />
+                                  <Setter Target="RightButton.Opacity" Value="1" />
+                                </VisualState.Setters>
+                              </VisualState>
+                            </VisualStateGroup>
+                          </VisualStateManager.VisualStateGroups>
+
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="{StaticResource ShelfRowSideGridLength}" />
+                          </Grid.ColumnDefinitions>
+
+                          <!-- scroll left button -->
+                          <Button Name="LeftButton"
+                            Views:ScrollButton.Direction="Left"
+                            Views:ScrollButton.Scroller="{Binding ElementName=lockups}"
+                            Style="{StaticResource LeftButtonStyle}"
+                            />
+
+                          <!-- horizontal list of collectionGroup items -->
+                          <Grid Grid.Column="1" Padding="-10 0">
+                            <ListView Name="lockups"
+                              Views:ItemsAutomationId.Enable="True"
+                              Views:ScrollRetainer.Retain="True"
+                              Views:ScrollViewer.HorizontalSnapPointsType="Mandatory"
+                              ItemTemplateSelector="{StaticResource LockupTemplateSelector}"
+                              ItemsSource="{Binding children}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                              ScrollViewer.HorizontalScrollMode="Auto"
+                              ScrollViewer.VerticalScrollMode="Disabled"
+                              SelectionMode="None"
+                              >
+                              <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                  <Setter Property="Padding" Value="10 0" />
+                                  <Setter Property="IsTabStop" Value="False" />
+                                  <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                  <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                              </ListView.ItemContainerStyle>
+                              <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                  <ItemsWrapGrid
+                                    Views:CommandEvents.ForwardPointerWheelChangedEvent="{Binding ElementName=HorizontalMultiRowCollectionView}"
+                                    CacheLength="0"
+                                    ItemHeight="{Binding ItemHeight, ElementName=Prototype}"
+                                    ItemWidth="{Binding ItemWidth, Source={StaticResource GridStyle}}"
+                                    MaximumRowsOrColumns="1"
+                                    Orientation="Vertical"
+                                    />
+                                </ItemsPanelTemplate>
+                              </ListView.ItemsPanel>
+                            </ListView>
+                          </Grid>
+
+                          <!-- scroll right button -->
+                          <Button Name="RightButton"
+                            Grid.Column="2"
+                            Views:ScrollButton.Direction="Right"
+                            Views:ScrollButton.Scroller="{Binding ElementName=lockups}"
+                            Style="{StaticResource RightButtonStyle}"
+                            />
+
+                        </Grid>
+                      </ControlTemplate>
+                    </ContentControl.Template>
+                  </ContentControl>
+
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- horizontal line between some collections -->
+            <Border Margin="40 25 40 0" Style="{StaticResource HorizontalDividerStyle}" />
+
+          </StackPanel>
+
+        </Grid>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

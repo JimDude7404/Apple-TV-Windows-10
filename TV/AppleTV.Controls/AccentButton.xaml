@@ -1,0 +1,10 @@
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  >
+  <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{ThemeResource SystemAccentColorLight1}" />
+  <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{ThemeResource SystemAccentColorDark3}" />
+  <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{ThemeResource SystemAccentColorLight3}" />
+  <!-- Should we change border brushes like ButtonBorderBrushPressed too? -->
+</ResourceDictionary>

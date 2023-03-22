@@ -1,0 +1,68 @@
+<!--
+    Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Name="CommerceTransaction"
+  IsTabStop="False"
+  >
+
+    <Control.Template>
+        <ControlTemplate TargetType="Views:CommerceTransactionDialogView">
+            <StackPanel Name="CommerceTransactionDialog">
+                <Image
+                  Width="72"
+                  Height="72"
+                  Margin="0 10 0 25"
+                  HorizontalAlignment="Center"
+                  Source="ms-appx:///Images/Square44x44Logo.targetsize-72.png"
+                  />
+
+                <TextBlock
+                  DataContext="{Binding children}"
+                  HorizontalTextAlignment="Center"
+                  Style="{StaticResource Title2EmphTextBlockStyle}"
+                  Text="{Binding header}"
+                  />
+
+                <TextBlock
+                  Padding="0 10 0 20"
+                  DataContext="{Binding children}"
+                  HorizontalTextAlignment="Center"
+                  Style="{StaticResource BodyTextBlockStyle}"
+                  Text="{Binding label}"
+                  />
+
+                <Views:CollectionUniformGrid
+                  Name="Buttons"
+                  ItemsSource="{Binding children.Buttons}"
+                  Orientation="Horizontal"
+                  >
+                    <Views:CollectionUniformGrid.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                              HorizontalAlignment="Center"
+                              Command="{Binding routerDataSource.selectEventDataSource}"
+                              CornerRadius="{StaticResource ControlCornerRadius}"
+                              Style="{StaticResource DialogButtonStyle}"
+                              >
+                                <TextBlock
+                                  MinWidth="100"
+                                  HorizontalAlignment="Center"
+                                  ampc:TextBlock.TaggedText="{Binding title}"
+                                  DataContext="{Binding children}"
+                                  HorizontalTextAlignment="Center"
+                                  Style="{StaticResource Title3TextBlockStyle}"
+                                  />
+                            </Button>
+                        </DataTemplate>
+                    </Views:CollectionUniformGrid.ItemTemplate>
+                </Views:CollectionUniformGrid>
+            </StackPanel>
+        </ControlTemplate>
+    </Control.Template>
+
+</Control>

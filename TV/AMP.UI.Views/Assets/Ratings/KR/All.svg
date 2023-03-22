@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="auto" height="auto" viewBox="0 0 300 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>_Assets/Content Ratings &amp; Descriptors/Localization/Korea/Age Ratings/All</title>
+    <g id="_Assets/Content-Ratings-&amp;-Descriptors/Localization/Korea/Age-Ratings/All" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M266.185364,300 L33.8221953,300 C15.1496825,300 0,284.857877 0,266.185364 L0,33.8146356 C0,15.1421228 15.1496825,0 33.8221953,0 L266.185364,0 C284.865437,0 300,15.1421228 300,33.8146356 L300,266.185364 C300,284.857877 284.865437,300 266.185364,300" id="Fill-583" fill="#269251"></path>
+        <path d="M86.205409,227 L82.6160036,204.169383 L56.3839964,204.184543 L52.8096409,226.99242 L19,227 L19,226.590686 L51.0111757,74 L87.9812994,74.0075799 L119.992475,226.605846 L120,227 L86.205409,227 Z M69.492475,123.2541 L61.1472955,175.327917 L77.8451796,175.327917 L69.492475,123.2541 Z" id="Fill-584" fill="#FFFFFE"></path>
+        <polygon id="Fill-585" fill="#FFFFFE" points="126 227 126 74 160.010025 74 160.010025 196.362101 200 196.362101 200 227"></polygon>
+        <polygon id="Fill-586" fill="#FFFFFE" points="207 226.984841 207 74 240.994885 74 240.987316 196.356039 281 196.356039 281 227"></polygon>
+    </g>
+</svg>

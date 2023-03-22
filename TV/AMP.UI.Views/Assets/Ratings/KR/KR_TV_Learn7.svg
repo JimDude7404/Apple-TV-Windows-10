@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="auto" height="auto" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>kr-tv/KR_TV_Learn7</title>
+    <g id="kr-tv/KR_TV_Learn7" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Korean-Age-Rating---7">
+            <path d="M36,1 C16.6700338,1 1,16.6700338 1,36 C1,55.3299662 16.6700338,71 36,71 C55.3299662,71 71,55.3299662 71,36 C71,16.6700338 55.3299662,1 36,1 Z" id="Path" fill="#FFFFFF" fill-rule="nonzero"></path>
+            <circle id="Oval" fill="#FAC405" cx="36" cy="36" r="30"></circle>
+            <path d="M36,0 C55.882251,0 72,16.117749 72,36 C72,55.882251 55.882251,72 36,72 C16.117749,72 0,55.882251 0,36 C0,16.117749 16.117749,0 36,0 Z M36,2 C17.2223185,2 2,17.2223185 2,36 C2,54.7776815 17.2223185,70 36,70 C54.7776815,70 70,54.7776815 70,36 C70,17.2223185 54.7776815,2 36,2 Z" id="Oval" fill="#CFCDC3" fill-rule="nonzero"></path>
+            <polygon id="7" fill="#000000" fill-rule="nonzero" points="35.7111088 47 44.2330815 29.9863281 44.2330815 25.1577148 27.4313237 25.1577148 27.4313237 30.0014648 37.9059331 30.0014648 37.9059331 30.1225586 28.9904057 47"></polygon>
+        </g>
+    </g>
+</svg>

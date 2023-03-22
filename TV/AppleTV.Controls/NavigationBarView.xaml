@@ -1,0 +1,111 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  IsTabStop="False"
+  >
+  <Control.Resources>
+    <Views:FirstOfTypeConverter x:Key="SelectTitleChild" ItemType="title" />
+
+    <Views:ItemTypeTemplateSelector x:Key="BarItemsTemplateSelector">
+      <Views:ItemTypeTemplate ItemType="button">
+        <DataTemplate>
+          <Button
+            AutomationProperties.Name="{Binding attributes.accessibilityText}"
+            Command="{Binding routerDataSource.selectEventDataSource}"
+            Template="{x:Null}"
+            >
+            <TextBlock
+              DataContext="{Binding children, Converter={StaticResource SelectTitleChild}}"
+              Style="{StaticResource BodyTextBlockStyle}"
+              Text="{Binding value}"
+              />
+          </Button>
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+      <Views:ItemTypeTemplate ItemType="img">
+        <DataTemplate>
+          <Grid Name="LogoParent">
+            <Grid.Resources>
+              <Views:ImageSize x:Key="LogoSize"
+                Height="30"
+                FallbackAspectRatio="{StaticResource AspectRatio_8_3}"
+                />
+              <Views:JsonImageSource x:Key="LogoSource"
+                Img="{Binding}"
+                RequestSize="{StaticResource LogoSize}"
+                ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+                />
+              <Views:JsonImageTintBrush x:Key="LogoBrush"
+                JsonImageSource="{StaticResource LogoSource}"
+                TintColor="{Binding ActualTheme, ElementName=LogoParent}"
+                />
+            </Grid.Resources>
+            <ampc:AspectRatioGrid
+              Name="logo"
+              Width="{Binding Width, Source={StaticResource LogoSource}}"
+              Height="{Binding Height, Source={StaticResource LogoSource}}"
+              AspectRatio="{Binding AspectRatio, Source={StaticResource LogoSource}}"
+              Background="{Binding Brush, Source={StaticResource LogoBrush}}"
+              />
+          </Grid>
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+    </Views:ItemTypeTemplateSelector>
+
+    <DataTemplate x:Key="BarItemsTemplate">
+      <ItemsControl
+        IsTabStop="False"
+        ItemTemplateSelector="{StaticResource BarItemsTemplateSelector}"
+        ItemsSource="{Binding children}"
+        >
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+    </DataTemplate>
+  </Control.Resources>
+  <Control.Template>
+    <ControlTemplate TargetType="Views:NavigationBarView">
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Views:OptionalContentPresenter
+          Grid.Column="0"
+          Margin="25 10 0 0"
+          Content="{Binding children.leftBarItems}"
+          OptionalTemplate="{StaticResource BarItemsTemplate}"
+          />
+        <TextBlock
+          Grid.Column="1"
+          Grid.ColumnSpan="3"
+          Margin="0 10 0 0"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          AutomationProperties.AutomationId="navigationBarTitle"
+          AutomationProperties.Name="{Binding children.title.value}"
+          Style="{StaticResource BodyTextBlockStyle}"
+          Text="{Binding children.title.value}"
+          />
+        <Views:OptionalContentPresenter
+          Grid.Column="2"
+          Margin="0 10 25 0"
+          Content="{Binding children.rightBarItems}"
+          OptionalTemplate="{StaticResource BarItemsTemplate}"
+          />
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

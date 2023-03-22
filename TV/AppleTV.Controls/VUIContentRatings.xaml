@@ -1,0 +1,407 @@
+<!--
+  Copyright: © 2023 Apple Inc. All rights reserved.
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  >
+
+  <!--
+  The below is copied from VUIContentRatingSystemUtilities.m
+  it is effectively a map<rating_domain, map<rating_name, pair<file_path, tintable>>>
+  -->
+
+  <!-- Music -->
+  <ResourceDictionary x:Key="riaa" />
+  <!-- UnitedStates, -->
+
+  <!-- Movies -->
+  <ResourceDictionary x:Key="al-movies" />
+  <!-- Albania, -->
+  <ResourceDictionary x:Key="ao-movies" />
+  <!-- Angola, -->
+  <ResourceDictionary x:Key="ai-movies" />
+  <!-- Anguilla, -->
+  <ResourceDictionary x:Key="ag-movies" />
+  <!-- AntiguaBarbuda, -->
+  <ResourceDictionary x:Key="ar-movies" />
+  <!-- Argentina, -->
+  <ResourceDictionary x:Key="am-movies" />
+  <!-- Armenia, -->
+  <ResourceDictionary x:Key="au-movies" />
+  <!-- Australia, -->
+  <ResourceDictionary x:Key="at-movies" />
+  <!-- Austria, -->
+  <ResourceDictionary x:Key="az-movies" />
+  <!-- Azerbaijan, -->
+  <ResourceDictionary x:Key="bs-movies" />
+  <!-- Bahamas, -->
+  <ResourceDictionary x:Key="bh-movies" />
+  <!-- Bahrain, -->
+  <ResourceDictionary x:Key="bb-movies" />
+  <!-- Barbados, -->
+  <ResourceDictionary x:Key="by-movies" />
+  <!-- Belarus, -->
+  <ResourceDictionary x:Key="be-movies" />
+  <!-- Belgium, -->
+  <ResourceDictionary x:Key="bz-movies" />
+  <!-- Belize, -->
+  <ResourceDictionary x:Key="bj-movies" />
+  <!-- Benin, -->
+  <ResourceDictionary x:Key="bm-movies" />
+  <!-- Bermuda, -->
+  <ResourceDictionary x:Key="bo-movies" />
+  <!-- Bolivia, -->
+  <ResourceDictionary x:Key="bw-movies" />
+  <!-- Botswana, -->
+  <ResourceDictionary x:Key="br-movies">
+    <Views:RatingEntry x:Key="BARSL" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_LearnL.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS10" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn10.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS12" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn12.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS14" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn14.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS16" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn16.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn18.svg" IsTintable="False" />
+  </ResourceDictionary>
+  <!-- Brazil, -->
+  <ResourceDictionary x:Key="vg-movies" />
+  <!-- BritishVirginIslands, -->
+  <ResourceDictionary x:Key="bn-movies" />
+  <!-- Brunei, -->
+  <ResourceDictionary x:Key="bg-movies" />
+  <!-- Bulgaria, -->
+  <ResourceDictionary x:Key="bf-movies" />
+  <!-- BurkinaFaso, -->
+  <ResourceDictionary x:Key="kh-movies" />
+  <!-- Cambodia, -->
+  <ResourceDictionary x:Key="ca-movies" />
+  <!-- Canada, -->
+  <ResourceDictionary x:Key="cv-movies" />
+  <!-- CapeVerde, -->
+  <ResourceDictionary x:Key="ky-movies" />
+  <!-- CaymanIslands, -->
+  <ResourceDictionary x:Key="td-movies" />
+  <!-- Chad, -->
+  <ResourceDictionary x:Key="cl-movies" />
+  <!-- Chile, -->
+  <ResourceDictionary x:Key="cn-movies" />
+  <!-- China, -->
+  <ResourceDictionary x:Key="co-movies" />
+  <!-- Colombia, -->
+  <ResourceDictionary x:Key="cg-movies" />
+  <!-- CongoBrazzaville, -->
+  <ResourceDictionary x:Key="cr-movies" />
+  <!-- CostaRica, -->
+  <ResourceDictionary x:Key="cy-movies" />
+  <!-- Cyprus, -->
+  <ResourceDictionary x:Key="cz-movies" />
+  <!-- CzechRepublic, -->
+  <ResourceDictionary x:Key="dk-movies" />
+  <!-- Denmark, -->
+  <ResourceDictionary x:Key="dm-movies" />
+  <!-- Dominica, -->
+  <ResourceDictionary x:Key="do-movies" />
+  <!-- DominicanRepublic, -->
+  <ResourceDictionary x:Key="ec-movies" />
+  <!-- Ecuador, -->
+  <ResourceDictionary x:Key="eg-movies" />
+  <!-- Egypt, -->
+  <ResourceDictionary x:Key="sv-movies" />
+  <!-- ElSalvador, -->
+  <ResourceDictionary x:Key="ee-movies" />
+  <!-- Estonia, -->
+  <ResourceDictionary x:Key="fj-movies" />
+  <!-- Fiji, -->
+  <ResourceDictionary x:Key="fi-movies" />
+  <!-- Finland, -->
+  <ResourceDictionary x:Key="fr-movies" />
+  <!-- France, -->
+  <ResourceDictionary x:Key="gm-movies" />
+  <!-- Gambia, -->
+  <ResourceDictionary x:Key="ge-movies" />
+  <!-- Georgia, -->
+  <ResourceDictionary x:Key="de-movies" />
+  <!-- Germany, -->
+  <ResourceDictionary x:Key="gh-movies" />
+  <!-- Ghana, -->
+  <ResourceDictionary x:Key="gr-movies" />
+  <!-- Greece, -->
+  <ResourceDictionary x:Key="gd-movies" />
+  <!-- Grenada, -->
+  <ResourceDictionary x:Key="gt-movies" />
+  <!-- Guatemala, -->
+  <ResourceDictionary x:Key="gw-movies" />
+  <!-- GuineaBissau, -->
+  <ResourceDictionary x:Key="gy-movies" />
+  <!-- Guyana, -->
+  <ResourceDictionary x:Key="hn-movies" />
+  <!-- Honduras, -->
+  <ResourceDictionary x:Key="hk-movies" />
+  <!-- HongKong, -->
+  <ResourceDictionary x:Key="hu-movies" />
+  <!-- Hungary, -->
+  <ResourceDictionary x:Key="ic-movies" />
+  <!-- Iceland, -->
+  <ResourceDictionary x:Key="in-movies" />
+  <!-- India, -->
+  <ResourceDictionary x:Key="id-movies" />
+  <!-- Indonesia, -->
+  <ResourceDictionary x:Key="ie-movies" />
+  <!-- Ireland, -->
+  <ResourceDictionary x:Key="il-movies" />
+  <!-- Israel, -->
+  <ResourceDictionary x:Key="it-movies" />
+  <!-- Italy, -->
+  <ResourceDictionary x:Key="jm-movies" />
+  <!-- Jamaica, -->
+  <ResourceDictionary x:Key="jp-movies" />
+  <!-- Japan, -->
+  <ResourceDictionary x:Key="jo-movies" />
+  <!-- Jordan, -->
+  <ResourceDictionary x:Key="kz-movies" />
+  <!-- Kazakhstan, -->
+  <ResourceDictionary x:Key="ke-movies" />
+  <!-- Kenya, -->
+  <ResourceDictionary x:Key="kw-movies" />
+  <!-- Kuwait, -->
+  <ResourceDictionary x:Key="kg-movies" />
+  <!-- Kyrgyzstan, -->
+  <ResourceDictionary x:Key="la-movies" />
+  <!-- Laos, -->
+  <ResourceDictionary x:Key="lv-movies" />
+  <!-- Latvia, -->
+  <ResourceDictionary x:Key="lb-movies" />
+  <!-- Lebanon, -->
+  <ResourceDictionary x:Key="lt-movies" />
+  <!-- Lithuania, -->
+  <ResourceDictionary x:Key="lu-movies" />
+  <!-- Luxembourg, -->
+  <ResourceDictionary x:Key="mo-movies" />
+  <!-- Macau, -->
+  <ResourceDictionary x:Key="mk-movies" />
+  <!-- Macedonia, -->
+  <ResourceDictionary x:Key="my-movies" />
+  <!-- Malaysia, -->
+  <ResourceDictionary x:Key="mt-movies" />
+  <!-- Malta, -->
+  <ResourceDictionary x:Key="mr-movies" />
+  <!-- Mauritania, -->
+  <ResourceDictionary x:Key="mu-movies" />
+  <!-- Mauritius, -->
+  <ResourceDictionary x:Key="mx-movies" />
+  <!-- Mexico, -->
+  <ResourceDictionary x:Key="fm-movies" />
+  <!-- Micronesia, -->
+  <ResourceDictionary x:Key="md-movies" />
+  <!-- Moldova, -->
+  <ResourceDictionary x:Key="mn-movies" />
+  <!-- Mongolia, -->
+  <ResourceDictionary x:Key="mz-movies" />
+  <!-- Mozambique, -->
+  <ResourceDictionary x:Key="na-movies" />
+  <!-- Namibia, -->
+  <ResourceDictionary x:Key="np-movies" />
+  <!-- Nepal, -->
+  <ResourceDictionary x:Key="nl-movies" />
+  <!-- Netherlands, -->
+  <ResourceDictionary x:Key="nz-movies" />
+  <!-- NewZealand, -->
+  <ResourceDictionary x:Key="ni-movies" />
+  <!-- Nicaragua, -->
+  <ResourceDictionary x:Key="ne-movies" />
+  <!-- Niger, -->
+  <ResourceDictionary x:Key="ng-movies" />
+  <!-- Nigeria, -->
+  <ResourceDictionary x:Key="no-movies" />
+  <!-- Norway, -->
+  <ResourceDictionary x:Key="om-movies" />
+  <!-- Oman, -->
+  <ResourceDictionary x:Key="pa-movies" />
+  <!-- Panama, -->
+  <ResourceDictionary x:Key="pg-movies" />
+  <!-- PapuaNewGuinea, -->
+  <ResourceDictionary x:Key="py-movies" />
+  <!-- Paraguay, -->
+  <ResourceDictionary x:Key="pe-movies" />
+  <!-- Peru, -->
+  <ResourceDictionary x:Key="ph-movies" />
+  <!-- Philippines, -->
+  <ResourceDictionary x:Key="pl-movies" />
+  <!-- Poland, -->
+  <ResourceDictionary x:Key="pt-movies" />
+  <!-- Portugal, -->
+  <ResourceDictionary x:Key="qa-movies" />
+  <!-- Qatar, -->
+  <ResourceDictionary x:Key="ro-movies" />
+  <!-- Romania, -->
+  <ResourceDictionary x:Key="ru-movies" />
+  <!-- Russia, -->
+  <ResourceDictionary x:Key="kn-movies" />
+  <!-- SaintKittsNevis, -->
+  <ResourceDictionary x:Key="sa-movies" />
+  <!-- SaudiArabia, -->
+  <ResourceDictionary x:Key="sn-movies" />
+  <!-- Senegal, -->
+  <ResourceDictionary x:Key="sc-movies" />
+  <!-- Seychelles, -->
+  <ResourceDictionary x:Key="sg-movies" />
+  <!-- Singapore, -->
+  <ResourceDictionary x:Key="sk-movies" />
+  <!-- Slovakia, -->
+  <ResourceDictionary x:Key="sl-movies" />
+  <!-- Slovenia, -->
+  <ResourceDictionary x:Key="za-movies" />
+  <!-- SouthAfrica, -->
+  <ResourceDictionary x:Key="kr-movies">
+    <Views:RatingEntry x:Key="12" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/12.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="15" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/15.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/18.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="ALL" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/All.svg" IsTintable="False" />
+  </ResourceDictionary>
+  <!-- SouthKorea, -->
+  <ResourceDictionary x:Key="es-movies" />
+  <!-- Spain, -->
+  <ResourceDictionary x:Key="lk-movies" />
+  <!-- SriLanka, -->
+  <ResourceDictionary x:Key="sr-movies" />
+  <!-- Suriname, -->
+  <ResourceDictionary x:Key="sz-movies" />
+  <!-- Swaziland, -->
+  <ResourceDictionary x:Key="se-movies" />
+  <!-- Sweden, -->
+  <ResourceDictionary x:Key="ch-movies" />
+  <!-- Switzerland, -->
+  <ResourceDictionary x:Key="tw-movies" />
+  <!-- Taiwan, -->
+  <ResourceDictionary x:Key="tj-movies" />
+  <!-- Tajikistan, -->
+  <ResourceDictionary x:Key="tz-movies" />
+  <!-- Tanzania, -->
+  <ResourceDictionary x:Key="th-movies" />
+  <!-- Thailand, -->
+  <ResourceDictionary x:Key="tt-movies" />
+  <!-- TrinidadTobago, -->
+  <ResourceDictionary x:Key="tn-movies" />
+  <!-- Tunisia, -->
+  <ResourceDictionary x:Key="tr-movies" />
+  <!-- Turkey, -->
+  <ResourceDictionary x:Key="tm-movies" />
+  <!-- Turkmenistan, -->
+  <ResourceDictionary x:Key="ug-movies" />
+  <!-- Uganda, -->
+  <ResourceDictionary x:Key="ua-movies" />
+  <!-- Ukraine, -->
+  <ResourceDictionary x:Key="ae-movies" />
+  <!-- UnitedArabEmirates, -->
+  <ResourceDictionary x:Key="uk-movies">
+    <Views:RatingEntry x:Key="BBFCUC" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/UC.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFCU" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC U_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFCPG" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC PG_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC12" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC 12_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC12A" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/12A.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC15" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC 15_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC 18_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFCUR18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/R18.svg" IsTintable="False" />
+  </ResourceDictionary>
+  <!-- UnitedKingdom, -->
+  <ResourceDictionary x:Key="mpaa">
+    <Views:RatingEntry x:Key="G" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/G.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="PG" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/PG.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="PG-13" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/PG13.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="R" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/R.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="NC-17" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/NC17.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="Unrated" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/Unrated.png" IsTintable="True" />
+    <Views:RatingEntry x:Key="NR" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/NotRated.png" IsTintable="True" />
+  </ResourceDictionary>
+  <!-- UnitedStates, -->
+  <ResourceDictionary x:Key="uy-movies" />
+  <!-- Uruguay, -->
+  <ResourceDictionary x:Key="uz-movies" />
+  <!-- Uzbekistan, -->
+  <ResourceDictionary x:Key="ve-movies" />
+  <!-- Venezuela, -->
+  <ResourceDictionary x:Key="vn-movies" />
+  <!-- Vietnam, -->
+  <ResourceDictionary x:Key="ye-movies" />
+  <!-- Yemen, -->
+  <ResourceDictionary x:Key="zw-movies" />
+  <!-- Zimbabwe, -->
+
+  <!-- TV -->
+  <ResourceDictionary x:Key="au-tv" />
+  <!-- Austrialia, -->
+  <ResourceDictionary x:Key="br-tv">
+    <Views:RatingEntry x:Key="BARSL" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_LearnL.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS10" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn10.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS12" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn12.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS14" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn14.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS16" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn16.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BARS18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/BR/BR_Learn18.svg" IsTintable="False" />
+  </ResourceDictionary>
+  <!-- Brazil, -->
+  <ResourceDictionary x:Key="ca-tv" />
+  <!-- Canada,, -->
+  <ResourceDictionary x:Key="fr-tv" />
+  <!-- France,, -->
+  <ResourceDictionary x:Key="de-tv" />
+  <!-- Germany, -->
+  <ResourceDictionary x:Key="it-tv" />
+  <!-- Italy, -->
+  <ResourceDictionary x:Key="jp-tv" />
+  <!-- Japan,, -->
+  <ResourceDictionary x:Key="kr-tv">
+    <Views:RatingEntry x:Key="7" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/KR_TV_Learn7.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="12" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/KR_TV_Learn12.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="15" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/KR_TV_Learn15.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="19" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/KR_TV_Learn19.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="ALL" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/KR/KR_TV_LearnAll.svg" IsTintable="False" />
+  </ResourceDictionary>
+  <!-- SouthKorea, -->
+  <ResourceDictionary x:Key="nz-tv" />
+  <!-- NewZealand, -->
+  <ResourceDictionary x:Key="za-tv" />
+  <!-- SouthAfrica, -->
+  <ResourceDictionary x:Key="uk-tv">
+    <Views:RatingEntry x:Key="BBFCUC" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/UC.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFCU" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC U_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFCPG" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC PG_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC12" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC 12_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC12A" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/12A.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC15" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC 15_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFC18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/BBFC 18_RGB.svg" IsTintable="False" />
+    <Views:RatingEntry x:Key="BBFCUR18" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/GB/R18.svg" IsTintable="False" />
+  </ResourceDictionary>
+  <!-- UnitedKingdom, -->
+  <ResourceDictionary x:Key="us-tv">
+    <Views:RatingEntry x:Key="TV-G" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-G.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-Y" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-Y.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-PG" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-PG.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-Y7" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-Y7.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-Y7FV" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-7FV.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-14" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-14.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-MA" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-MA.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-NR" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-NR.svg" IsTintable="True" />
+    <Views:RatingEntry x:Key="TV-UR" ImageUri="ms-appx:///AMP.UI.Views/Assets/Ratings/US/TV-UR.svg" IsTintable="True" />
+  </ResourceDictionary>
+  <!-- UnitedStates, -->
+
+  <!-- UMC Specific rating systems -->
+  <ResourceDictionary x:Key="nz-oflc" />
+  <!-- NewZealand, -->
+  <ResourceDictionary x:Key="bbfc" />
+  <!-- UnitedKingdom, -->
+
+  <!--
+  I have put these here so that we don't have to go and search for the list of rating system coming from UMC again.
+  This whole list includes covers all the rating system that either come from jingle or umc.
+    <ResourceDictionary x:Key="de-fsk" /> // Germany,
+    <ResourceDictionary x:Key="fr-cnc" /> // France,
+    <ResourceDictionary x:Key="ca-chvrs" /> // Canada,
+    <ResourceDictionary x:Key="ca-rcq" /> // Canada,
+    <ResourceDictionary x:Key="ie_ifco" /> // Ireland,
+    <ResourceDictionary x:Key="fsk" /> // Austria,
+    <ResourceDictionary x:Key="au-oflc" /> // Australia,
+    <ResourceDictionary x:Key="jp-eirin" /> // Japan,
+  -->
+
+</ResourceDictionary>

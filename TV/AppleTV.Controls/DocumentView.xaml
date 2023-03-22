@@ -1,0 +1,126 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control Name="DocumentRoot"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  Views:ScrollRetainer.Root="True"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+    <Views:FirstOfTypeConverter x:Key="SelectDescriptionChild" ItemType="description" />
+
+    <Views:ItemTypeTemplateSelector x:Key="DocumentChildTemplates">
+
+      <Views:ItemTypeTemplate ItemType="alertSelectionTemplate">
+        <DataTemplate>
+          <Views:AlertSelectionTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="canonicalTemplate">
+        <DataTemplate>
+          <Views:VerticalStackTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="commerceTransactionDialog">
+        <DataTemplate>
+          <Views:CommerceTransactionDialogView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="descriptionTemplate">
+        <DataTemplate>
+          <TextBlock
+            Margin="20"
+            ampc:TextBlock.TaggedText="{Binding value}"
+            DataContext="{Binding children, Converter={StaticResource SelectDescriptionChild}}"
+            Style="{StaticResource BodyTextBlockStyle}"
+            />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="errorTemplate">
+        <DataTemplate>
+          <Views:ErrorTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="gdprWelcomeTemplate">
+        <DataTemplate>
+          <Views:GdprWelcomeTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="locationPromptTemplate">
+        <DataTemplate>
+          <Views:LocationPromptTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="offerSelectionTemplate">
+        <DataTemplate>
+          <Views:OfferSelectionTemplateView Margin="0 20 0 0" />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="sportsCanonicalTemplate">
+        <DataTemplate>
+          <Views:VerticalStackTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="upsellOfferTemplate">
+        <DataTemplate>
+          <Views:UpsellOfferTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+      <Views:ItemTypeTemplate ItemType="verticalStackTemplate">
+        <DataTemplate>
+          <Views:VerticalStackTemplateView />
+        </DataTemplate>
+      </Views:ItemTypeTemplate>
+
+    </Views:ItemTypeTemplateSelector>
+
+    <Views:FilterConverter x:Key="FilterOutConverter" FilterType="FilterOut" />
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="auto" />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Views:OptionalContentPresenter Name="NavigationBar"
+          Grid.Row="0"
+          Content="{Binding document.navigationBar}"
+          >
+          <Views:OptionalContentPresenter.OptionalTemplate>
+            <DataTemplate>
+              <Views:NavigationBarView />
+            </DataTemplate>
+          </Views:OptionalContentPresenter.OptionalTemplate>
+        </Views:OptionalContentPresenter>
+        <ContentControl Name="document"
+          Grid.Row="1"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          HorizontalContentAlignment="Stretch"
+          VerticalContentAlignment="Stretch"
+          Content="{Binding document[0]}"
+          ContentTemplateSelector="{StaticResource DocumentChildTemplates}"
+          IsTabStop="False"
+          />
+      </Grid>
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

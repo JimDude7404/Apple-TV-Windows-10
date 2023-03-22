@@ -1,0 +1,83 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampc="using:AMP.UI.Controls"
+  IsTabStop="False"
+  >
+
+  <Control.Resources>
+
+    <!--
+      capture the background image theme here so that it can be passed to verticalStack children as a
+      StaticResource since the children don't have access to json tree data members outside of their local scope
+    -->
+    <Views:StaticResourceValue x:Key="TextForegroundValue" Value="{Binding children.img.theme, Converter={StaticResource TextForegroundSelector}}" />
+    <Views:ImageSize x:Key="ImgSize" Height="420" />
+    <Views:JsonImageSource x:Key="ImgSource"
+      Img="{Binding children.img}"
+      RequestSize="{StaticResource ImgSize}"
+      ResourceLookup="{StaticResource ImgSrcResourceLookup}"
+      />
+    <Views:JsonImageBrush x:Key="ImgBrush" JsonImageSource="{StaticResource ImgSource}" />
+
+    <x:Double x:Key="AspectRatio_4_1">4</x:Double>
+
+    <ampc:BooleanToInverseVisibilityConverter x:Key="GradientVisibility" />
+
+  </Control.Resources>
+
+  <Control.Template>
+    <ControlTemplate>
+
+      <ampc:AspectRatioGrid
+        Name="roomBanner"
+        MaxWidth="{StaticResource MaxContentAreaWidth}"
+        Margin="-10 0"
+        Views:JsonImage.FixDirection="True"
+        Views:JsonImage.LoadingCurtain="{StaticResource ImgBrush}"
+        AspectRatio="{Binding children.img.layout.aspectRatio, FallbackValue={StaticResource AspectRatio_4_1}}"
+        Background="{Binding Brush, Source={StaticResource ImgBrush}}"
+        BorderBrush="{StaticResource LockupBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="0 0 6 6"
+        >
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition Width="2*" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid
+          Name="Gradient"
+          Grid.ColumnSpan="3"
+          Visibility="{Binding children.img.disableGradient, Converter={StaticResource GradientVisibility}}"
+          >
+          <Grid.Background>
+            <LinearGradientBrush StartPoint="0.5 0" EndPoint="0.5 1">
+              <GradientStop Offset="0.66" Color="{Binding children.img.layout.backgroundColor, Converter={StaticResource ZeroAlpha}}" />
+              <GradientStop Offset="1.0" Color="{Binding children.img.layout.backgroundColor}" />
+            </LinearGradientBrush>
+          </Grid.Background>
+        </Grid>
+        <TextBlock
+          Grid.Column="1"
+          Margin="0 0 0 25"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Bottom"
+          Foreground="{Binding Value, Source={StaticResource TextForegroundValue}}"
+          MaxLines="{Binding children.description.layout.numberOfLines, FallbackValue=3}"
+          Style="{StaticResource Title3TallTextBlockStyle}"
+          Text="{Binding children.description.value}"
+          TextAlignment="Center"
+          TextWrapping="WrapWholeWords"
+          TextTrimming="CharacterEllipsis"
+          />
+      </ampc:AspectRatioGrid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>

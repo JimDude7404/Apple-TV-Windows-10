@@ -1,0 +1,83 @@
+<!--
+  Copyright © 2022 Apple Inc. All rights reserved.
+-->
+<Control
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Views="using:AppleTV.Controls"
+  xmlns:ampu="using:AMP.UI"
+  IsTabStop="False"
+  >
+  <Control.Template>
+    <ControlTemplate TargetType="Views:ErrorTemplateView">
+
+      <Grid Name="ErrorView" DataContext="{Binding children.errorView}">
+        <Views:CollectionStackPanel
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          ItemsSource="{Binding children}"
+          >
+          <Views:ItemTypeTemplateSelector>
+            <Views:ItemTypeTemplate ItemType="title">
+              <DataTemplate>
+                <TextBlock
+                  Style="{StaticResource Title3TextBlockStyle}"
+                  Text="{Binding value}"
+                  TextAlignment="Center"
+                  TextWrapping="Wrap"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+            <Views:ItemTypeTemplate ItemType="bodyText">
+              <DataTemplate>
+                <TextBlock
+                  Margin="0 15 0 0"
+                  Style="{StaticResource BodyTextBlockStyle}"
+                  Text="{Binding value}"
+                  TextAlignment="Center"
+                  TextWrapping="Wrap"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+          </Views:ItemTypeTemplateSelector>
+        </Views:CollectionStackPanel>
+        <Views:CollectionStackPanel
+          HorizontalAlignment="Center"
+          VerticalAlignment="Bottom"
+          ItemsSource="{Binding children}"
+          >
+          <!-- In release builds this data is omitted -->
+          <Views:ItemTypeTemplateSelector>
+            <Views:ItemTypeTemplate ItemType="debugText">
+              <DataTemplate>
+                <TextBlock
+                  Foreground="Red"
+                  IsTextSelectionEnabled="True"
+                  Style="{StaticResource FootnoteTextBlockStyle}"
+                  Text="{Binding value}"
+                  TextAlignment="Center"
+                  TextWrapping="Wrap"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+            <Views:ItemTypeTemplate ItemType="debugText1">
+              <DataTemplate>
+                <TextBlock
+                  Margin="0 15 0 0"
+                  Foreground="Red"
+                  IsTextSelectionEnabled="True"
+                  Style="{StaticResource FootnoteTextBlockStyle}"
+                  Text="{Binding value}"
+                  TextAlignment="Center"
+                  TextWrapping="Wrap"
+                  />
+              </DataTemplate>
+            </Views:ItemTypeTemplate>
+          </Views:ItemTypeTemplateSelector>
+        </Views:CollectionStackPanel>
+      </Grid>
+
+    </ControlTemplate>
+  </Control.Template>
+
+</Control>
